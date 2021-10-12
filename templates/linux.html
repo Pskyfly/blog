@@ -1,0 +1,463 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width initial-scale=1'>
+    <link rel="stylesheet" href="layui/css/layui.css">
+    <script src="layui/layui.js"></script>
+    <title>Linux学习报告</title>
+</head>
+
+<body>
+   <!--导航条-->
+  <div class="margin-left:20px">
+    <ul class="layui-nav" lay-filter="">
+      <li class="layui-nav-item"><a style="font-size: large;font-style: italic;">Pskyfly's Blog<a></li>
+      <li class="layui-nav-item layui-col-md-offset8"><a href="/homepage">首页</a></li>
+      <li class="layui-nav-item"><a href="/problems">刷题记录</a></li>
+      <li class="layui-nav-item">
+        <a href="javascript:;">学习笔记</a>
+        <dl class="layui-nav-child">
+          <!-- 二级菜单 -->
+          <dd><a href="/linux">Linux基础</a></dd>
+          <dd><a href="/layui">LayUI框架</a></dd>
+          <dd><a href="/acm">ACM-ICPC训练</a></dd>
+        </dl>
+      </li>
+    </ul>
+  </div>
+  <!--导航条-->
+
+    <h1 id='linux-学习笔记'>Linux 学习笔记</h1>
+    <h2 id='常见指令操作'>常见指令操作</h2>
+    <h4 id='cp操作复制粘贴重命名'>cp操作：复制+粘贴+重命名 </h4>
+    <p>两个参数记为 a b</p>
+    <p>如果a为文件路径，b为文件夹（目录），则表示将a所表示的文件复制到b中。</p>
+    <p>如果a为文件路径，b为文件夹/新的名字c，则表示将a所表示的文件复制到b中，并重命名为c。</p>
+    <p>如果a为文件夹路径，b也为文件夹路径，后面加上参数-r，则表示将文件夹a整体复制到文件夹b中。</p>
+    <p>（如果一个文件（夹）的名字中有空格，则可以用转译字符‘\ ’来表示，如果一个文件叫a b，则输入a\ b即可）</p>
+    <h4 id='mkdir创建文件夹'>mkdir：创建文件夹</h4>
+    <p>mkdir a 表示在当前目录创建文件夹a</p>
+    <p>mkdir a/b/c/…… -p 递归地创建文件夹，如果有就进入，没有就创建</p>
+    <p>mkdir a b c …… 创建文件夹a b c……</p>
+    <h4 id='touch创建文件'>touch：创建文件</h4>
+    <p>touch a 创建文件a</p>
+    <h4 id='rm删除文件和文件夹永久）'>rm：删除文件和文件夹（永久）</h4>
+    <p>rm a 删除a文件（a表示相对于当前目录的路径）</p>
+    <p>rm a b c…… 删除文件a,b,c……（记得加上后缀）</p>
+    <p>rm *.txt 删除所有的txt文件</p>
+    <p>rm a -r 删除文件夹a</p>
+    <p>rm a/* 删除a文件夹中的所有内容</p>
+    <h4 id='mv剪切粘贴重命名用法与cp一致）'>mv：剪切+粘贴+重命名（用法与cp一致）</h4>
+    <p><img src="C:\Users\黎明终点x\AppData\Roaming\Typora\typora-user-images\image-20210823145325336.png"
+            referrerpolicy="no-referrer" alt="image-20210823145325336"></p>
+    <h2 id='tmux和vim'>tmux和vim</h2>
+    <p>top: <strong>打开任务管理器</strong></p>
+    <p>ctrl+insert: tmux里的复制</p>
+    <p>shift+insert: tmux里的粘贴</p>
+    <h4 id='tmux功能'>tmux功能</h4>
+    <p>（1）分屏</p>
+    <p>（2）退出后仍然会进行（在云端执行）</p>
+    <ol start=''>
+        <li>tmux教程
+            功能：
+            (1) 分屏。
+            (2) 允许断开Terminal连接后，继续运行进程。
+            结构：
+            一个tmux可以包含多个session，一个session可以包含多个window，一个window可以包含多个pane。
+            实例：
+            tmux:
+            session 0:
+            window 0:
+            pane 0
+            pane 1
+            pane 2
+            ...
+            window 1
+            window 2
+            ...
+            session 1
+            session 2
+            ...
+            操作：
+            (1) tmux：新建一个session，其中包含一个window，window中包含一个pane，pane里打开了一个shell对话框。
+            (2) 按下Ctrl + a后手指松开，然后按%：将当前pane左右平分成两个pane。
+            (3) 按下Ctrl + a后手指松开，然后按&quot;：将当前pane上下平分成两个pane。
+            (4) Ctrl + d：关闭当前pane；如果当前window的所有pane均已关闭，则自动关闭window；如果当前session的所有window均已关闭，则自动关闭session。
+            (5) 鼠标点击可以选pane。
+            (6) 按下ctrl + a后手指松开，然后按方向键：选择相邻的pane。
+            (7) 鼠标拖动pane之间的分割线，可以调整分割线的位置。
+            (8) 按住ctrl + a的同时按方向键，可以调整pane之间分割线的位置。
+            (9) 按下ctrl + a后手指松开，然后按z：将当前pane全屏/取消全屏。
+            (10) 按下ctrl + a后手指松开，然后按d：挂起当前session。
+            (11) tmux a：打开之前挂起的session。
+            (12) 按下ctrl + a后手指松开，然后按s：选择其它session。
+            方向键 —— 上：选择上一项 session/window/pane
+            方向键 —— 下：选择下一项 session/window/pane
+            方向键 —— 右：展开当前项 session/window
+            方向键 —— 左：闭合当前项 session/window
+            (13) 按下Ctrl + a后手指松开，然后按c：在当前session中创建一个新的window。
+            (14) 按下Ctrl + a后手指松开，然后按w：选择其他window，操作方法与(12)完全相同。
+            (15) 按下Ctrl + a后手指松开，然后按PageUp：翻阅当前pane内的内容。
+            (16) 鼠标滚轮：翻阅当前pane内的内容。
+            (17) 在tmux中选中文本时，需要按住shift键。</li>
+        <li>vim教程
+            功能：
+            (1) 命令行模式下的文本编辑器。
+            (2) 根据文件扩展名自动判别编程语言。支持代码缩进、代码高亮等功能。
+            (3) 使用方式：vim filename
+            如果已有该文件，则打开它。
+            如果没有该文件，则打开个一个新的文件，并命名为filename
+            模式：
+            (1) 一般命令模式
+            默认模式。命令输入方式：类似于打游戏放技能，按不同字符，即可进行不同操作。可以复制、粘贴、删除文本等。
+            (2) 编辑模式
+            在一般命令模式里按下i，会进入编辑模式。
+            按下ESC会退出编辑模式，返回到一般命令模式。
+            (3) 命令行模式
+            在一般命令模式里按下:/?三个字母中的任意一个，会进入命令行模式。命令行在最下面。
+            可以查找、替换、保存、退出、配置编辑器等。
+            操作：
+            (1) i：进入编辑模式
+            (2) ESC：进入一般命令模式
+            (3) h 或 左箭头键：光标向左移动一个字符
+            (4) j 或 向下箭头：光标向下移动一个字符
+            (5) k 或 向上箭头：光标向下移动一个字符
+            (6) l 或 向右箭头：光标向右移动一个字符
+            (7) n<Space>：n表示数字，按下数字后再按空格，光标会向右移动这一行的n个字符
+                (8) 0 或 功能键[Home]：光标移动到本行开头
+                (9) $ 或 功能键[End]：光标移动到本行末尾
+                (10) G：光标移动到最后一行
+                (11) :n 或 nG：n为数字，光标移动到第n行
+                (12) gg：光标移动到第一行，相当于1G
+                (13) n<Enter>：n为数字，光标向下移动n行
+                    (14) /word：向光标之下寻找第一个值为word的字符串。
+                    (15) ?word：向光标之上寻找第一个值为word的字符串。
+                    (16) n：重复前一个查找操作
+                    (17) N：反向重复前一个查找操作
+                    (18) :n1,n2s/word1/word2/g：n1与n2为数字，在第n1行与n2行之间寻找word1这个字符串，并将该字符串替换为word2
+                    (19) :1,$s/word1/word2/g：将全文的word1替换为word2
+                    (20) :1,$s/word1/word2/gc：将全文的word1替换为word2，且在替换前要求用户确认。
+                    (21) v：选中文本
+                    (22) d：删除选中的文本
+                    (23) dd: 删除当前行
+                    (24) y：复制选中的文本
+                    (25) yy: 复制当前行
+                    (26) p: 将复制的数据在光标的下一行/下一个位置粘贴
+                    (27) u：撤销
+                    (28) Ctrl + r：取消撤销
+                    (29) 大于号 &gt;：将选中的文本整体向右缩进一次
+                    (30) 小于号 &lt;：将选中的文本整体向左缩进一次
+                    (31) :w 保存
+                    (32) :w! 强制保存
+                    (33) :q 退出
+                    (34) :q! 强制退出
+                    (35) :wq 保存并退出
+                    (36) :set paste 设置成粘贴模式，取消代码自动缩进
+                    (37) :set nopaste 取消粘贴模式，开启代码自动缩进
+                    (38) :set nu 显示行号
+                    (39) :set nonu 隐藏行号
+                    (40) gg=G：将全文代码格式化
+                    (41) :noh 关闭查找关键词高亮
+                    (42) Ctrl + q：当vim卡死时，可以取消当前正在执行的命令
+                    异常处理：
+                    每次用vim编辑文件时，会自动创建一个.filename.swp的临时文件。
+                    如果打开某个文件时，该文件的swp文件已存在，则会报错。此时解决办法有两种：
+                    (1) 找到正在打开该文件的程序，并退出
+                    (2) 直接删掉该swp文件即可</li>
+
+    </ol>
+    <p>&nbsp;</p>
+    <h4 id='vim替换操作'>vim替换操作</h4>
+    <p>:&lt;初始行号&gt;,&lt;末尾行号&gt;s/&lt;要替换的单词&gt;/&lt;替换后的单词&gt;/g</p>
+    <p>(最后一行可以用$表示)</p>
+    <h4 id='vim复制操作坑人）'>vim复制操作（坑人）</h4>
+    <p>用v选中要复制的段落时，应当选中首尾的前一个字母，从光标来看是覆盖了第一个字母和最后一个字母的前一个。</p>
+    <p><a href='https://www.acwing.com/activity/content/code/content/1702560/' target='_blank'
+            class='url'>https://www.acwing.com/activity/content/code/content/1702560/</a></p>
+    <p>自己的虚拟机上会少覆盖一个，acwing上已经是正常的了</p>
+    <h2 id='shell语法'>shell语法</h2>
+    <p>详情见<a href='https://www.acwing.com/file_system/file/content/whole/index/content/2855883/'>3. shell语法 - AcWing</a>
+    </p>
+    <p>使用bash脚本时，一定要在开头加上</p>
+    <p>#! /bin/bash</p>
+    <p>表示使用bash解释器（注意最后没有‘/’）</p>
+    <p>写完后需要修改权限让他可执行:chmod +x &lt;文件名&gt;</p>
+    <p>用路径表示该文件时即可执行（但不能直接写test.sh而是./test.sh）</p>
+    <p>也可以用相对路径：~/test.sh</p>
+    <p>也可以用绝对路径:/home/acs/test.sh</p>
+    <p>可以直接用解释器执行，此时不需要权限也能执行: bash test.sh</p>
+    <h4 id='注释'>注释：</h4>
+    <p>#………… 单行注释</p>
+    <p>多行注释：</p>
+    <p>:&lt;&lt;abc</p>
+    <p>注释1</p>
+    <p>注释2</p>
+    <p>……</p>
+    <p>abc</p>
+    <p>abc代表一个字符串或者!</p>
+    <h4 id='变量'>变量</h4>
+    <p>定义一个字符串</p>
+    <p>s1=&quot;abc&quot; 可以用双引号</p>
+    <p>s2=&#39;bcd&#39; 可以用单引号</p>
+    <p>s3=def 可以不加引号</p>
+    <p>使用变量：</p>
+    <p>1、$s1 </p>
+    <p>2、${s1}</p>
+    <p>大括号可以不加，但会使变量更加明确，并且可以加上后续的字符串</p>
+    <p>例如echo ${s1}acwing可以表示s1的字符串接上acwing，去掉大括号则是一个新的变量s1acwing。（可以在最外层加上双引号，但是没必要）</p>
+    <p>只读变量（类似于常量）</p>
+    <p>readonly s1</p>
+    <p>declare -r s2</p>
+    <p>申明s1,s2为只读变量</p>
+    <h4 id='删除变量'>删除变量</h4>
+    <p>unset s1 将字符串s1变成空字符串</p>
+    <h4 id='进程'>进程</h4>
+    <p>bash会重新开启一个新的进程</p>
+    <p>用exit会关闭当前进程（已经窗口）</p>
+    <p>进程类似与python的命令行模式</p>
+    <h4 id='自定义变量和环境变量'>自定义变量和环境变量</h4>
+    <p>自己直接定义的变量是自定义变量，自定义变量在当前进程结束后会消失，而环境变量则会一直存在于主进程中。</p>
+    <p>export a 将a变成环境变量</p>
+    <p>declare -x a 将a变成环境变量</p>
+    <p>declare +x a 将a变成自定义变量</p>
+    <h4 id='字符串操作'>字符串操作</h4>
+    <p>用单引号括起来的字符串就只表示这个字符串</p>
+    <p>用双引号括起来的字符串或者不加引号的字符串会解释，转译，执行里面的符号。</p>
+    <p>例如s1=abc</p>
+    <p>echo &quot;$s1&quot; 输出abc</p>
+    <p>echo &#39;$s1&#39; 输出$s1</p>
+    <p>${#s1} 表示s1的长度</p>
+    <p>${s1: a: b} 表示从下标a开始的b个字符（包括a） </p>
+    <h4 id='默认参数'>默认参数</h4>
+    <p>在执行文件时可以传入一些参数</p>
+    <p>例如：./test.sh lth go</p>
+    <p>lth和go就是我们传入的参数，在vim中$1表示传入的第一个参数即lth，$2表示传入的第二个参数，即go，以此类推。$0表示我们的命令本身。echo $0会输出./test.sh。</p>
+    <p>第100个参数需要用大括号，即${100}</p>
+    <p>./test.sh lth go</p>
+    <p>$# 表示输入参数的个数</p>
+    <p>$* 表示由所有参数组成的一个字符串</p>
+    <p>&quot;lth go&quot;</p>
+    <p>$@ 表示多个字符串的集合，每个字符串代表一个参数。</p>
+    <p>&quot;lth&quot; &quot;go&quot;</p>
+    <p>$$: 当前进程的ID</p>
+    <p>$?: 上一条指令的返回值（正常为0）</p>
+    <p>$(&lt;某命令&gt;): 表示这条命令的输出结果</p>
+    <h4 id='数组'>数组</h4>
+    <p>数组可以直接定义</p>
+    <p>array={a b c d……} 可以用空格隔开</p>
+    <p>可以直接按下标逐个赋值</p>
+    <p>${array[*]}和${array[@]} 可以表示整个数组的元素</p>
+    <p>访问数组元素时一定要加上{}，例如：echo ${array[0]}</p>
+    <p>${#array[*]}和${#array[@]} 加上#可以表示数组的元素个数</p>
+    <h4 id='expr命令'>expr命令</h4>
+    <p>$(…………) 获得括号中命令的返回值</p>
+    <p>$(expr length &quot;$str&quot;) 获得str的长度,最好加上双引号，否则str不能有空格</p>
+    <p>expr index &quot;$str&quot; c 在字符串str中查找c第一次出现的位置，如果c是一个字符串，则查找的是c第一个字母的位置</p>
+    <h4 id='运算'>运算</h4>
+    <p>需要转译的符号：</p>
+    <p>( ) * &lt; &gt; &gt;= &lt;= &amp; |</p>
+    <p>转译可以用\……，也可以用单引号‘……’</p>
+    <p>&amp;和|如果两边的值都不为零，则返回第一个值</p>
+    <p>实现a=a+b</p>
+    <p>(1)let a=a+b</p>
+    <p>(2)((a=a+b))</p>
+    <p>(3)a=$[a+b]</p>
+    <h4 id='读入'>读入</h4>
+    <p>read -p &quot;提示信息&quot; -t &lt;等待时间&gt; name</p>
+    <p>-p用于添加提示信息，-t用来限制最大时间，name用于储存读入的变量</p>
+    <h4 id='输出echo）'>输出（echo）</h4>
+    <p>“……” 用双引号括起来的字符串会转译</p>
+    <p>‘……’ 单引号括起来的字符串会直接输出，不转译</p>
+    <p>开启转译-e后，用\c来终止输出，放到最后可以起到不输出回车的作用</p>
+    <p>原样输出字符串 echo &#39;……&#39;</p>
+    <p>echo ……（信息）&gt; name</p>
+    <p>将内容以覆盖的方式输出到name中</p>
+    <h4 id='test-命令'>test 命令</h4>
+    <p>结果是退出状态。</p>
+    <p>0表示真，1表示假。</p>
+    <p>短路原则：</p>
+    <p>a&amp;&amp;b 如果a为真(0)，则不执行b</p>
+    <p>a||b 如果a为假(1)，则不执行a</p>
+    <p>&lt;某判断语句c&gt;&amp;&amp;a||b 如果c为真，执行a，c为假执行b，用短路原则来实现if-else的功能。</p>
+    <p>数值比较，用lt，gt等等，而字符串比较用==和！=。</p>
+    <p>-o :或</p>
+    <p>-a：与</p>
+    <p>！：非</p>
+    <p>！优先级最高，-a优先级比-o高。</p>
+    <p>test与[]的用法基本一致</p>
+    <h4 id='循环'>循环</h4>
+    <p>序列表示方法：</p>
+    <p>seq 1 10 表示1到10的整数序列</p>
+    <p>{1..10} 表示1到10的整数序列</p>
+    <p>{a..z} 表示a到z的整数序列</p>
+    <h5 id='for循环'>for循环</h5>
+    <p>for i in a b c …… 枚举in后的每一个元素</p>
+    <p>for i in seq 1 10 枚举1 到10</p>
+    <p>for i in {1..10} 枚举1到10</p>
+    <p>for i in {a..z} 枚举从a到z</p>
+    <h5 id='while循环'>while循环</h5>
+    <p>while &lt;某语句c&gt;</p>
+    <p>do</p>
+    <p>语句1</p>
+    <p>语句2</p>
+    <p>……</p>
+    <p>done</p>
+    <p>如果c的exit code为真（0）则执行循环，否则退出循环</p>
+    <h5 id='until循环'>until循环</h5>
+    <p>until &lt;某语句c&gt;</p>
+    <p>do</p>
+    <p>语句1</p>
+    <p>语句2</p>
+    <p>……</p>
+    <p>done</p>
+    <p>如果c的exit code为真（0）则退出循环，否则执行循环</p>
+    <p>&nbsp;</p>
+    <p>break 可以退出一层循环但是不能退出switch</p>
+    <p>continue 可以结束当前循环</p>
+    <p>用top可以查看所有进程，然后可以用kill -9 &lt;进程的编号&gt; 结束该进程</p>
+    <h4 id='函数'>函数</h4>
+    <p>定义函数：</p>
+    <p>fun()</p>
+    <p>{</p>
+    <p> 语句1</p>
+    <p> 语句2</p>
+    <p> …………</p>
+    <p>}</p>
+    <p>调用时：fun &lt;参数1&gt; &lt;参数2&gt; &lt;参数3&gt;……</p>
+    <p>（不加小括号）</p>
+    <p>使用第i个参数时，用$i来表示，$#表示参数的数量</p>
+    <p>return a a为这个fun的exit code 范围是0-255，用test或者$?或者[]来截取</p>
+    <p>fun中的echo表示输出到stdout中，可以在其他函数中，用``和$()来截取</p>
+    <p>exit a 退出函数，exitcode为a</p>
+    <h4 id='文件重定向'>文件重定向</h4>
+    <p>a &gt; b.txt 把a命令输出的结果覆盖在b.txt中</p>
+    <p>a &gt;&gt; b.txt 把a命令的结果追加在b.txt中</p>
+    <p>a &lt; b.txt 把a命令的输入重定向在b.txt中</p>
+    <p>a &lt; b.txt &gt; c.txt a命令从b.txt中读入数据，将结果输出到c.txt中（两种重定向可以同时进行）</p>
+    <h4 id='引入脚本文件'>引入脚本文件</h4>
+    <p>bash文件的本质是将文件里的语句逐个执行一次。用source命令引入其他脚本。</p>
+    <p>source a.sh 引入a.sh文件</p>
+    <p>source home/arc/a.sh 也可以用绝对路径来表示</p>
+    <p>引入后会将该脚本文件中的内容全部执行一次</p>
+    <p>命令行选择技巧：按住shift在点击某个位置，即可选中上一个光标的位置到现在光标位置的段落。</p>
+    <h2 id='ssh'>ssh</h2>
+    <h4 id='ssh登录'>ssh登录</h4>
+    <p>服务器的登录方式：</p>
+    <p>ssh <UserName>@<HostName>
+    </p>
+    <p>Username是服务器里用户的名称，hostname是服务器的ip地址</p>
+    <p>例如 ssh acs_1275@123.57.47.211</p>
+    <p>用logout或者exit退出登录</p>
+    <h4 id='账号别名'>账号别名</h4>
+    <p>创建文件 ~/.ssh/config</p>
+    <p>然后vim config</p>
+    <p>在文件中输入：</p>
+    <p>Host myserver1
+        HostName IP地址或域名
+        User 用户名</p>
+    <p>Host myserver2
+        HostName IP地址或域名
+        User 用户名
+        之后再使用服务器时，可以直接使用别名myserver1、myserver2</p>
+    <p>这样就能用ssh mysever1来登录服务器（起到省代码的作用）</p>
+    <h4 id='免密登录'>免密登录</h4>
+    <p>在上述过程结束后需要输入密码，进行一下操作可以实现免密登录</p>
+    <p>ssh-keygen</p>
+    <p>这个指令用于创建密钥</p>
+    <p>然后一直回车即可，实际上是将登录需要的密码替换为空字符串，从而实现免密登录。</p>
+    <p>执行结束后，~/.ssh/目录下会多两个文件：</p>
+    <p>id_rsa：私钥
+        id_rsa.pub：公钥</p>
+    <p>把公钥的内容复制到我们需要登录的服务器中的~/.ssh/authorized_keys文件中即可，下次登录时，就会根据密钥进行匹配从而实现免密登录。</p>
+    <p>以上过程用两条指令代替即可：</p>
+    <p>ssh-keygen 创建密钥</p>
+    <p>ssh-copy-id myserver1 复制公钥，mysever1是服务器名称</p>
+    <p>然后输入所需密码即可</p>
+    <p>这样操作完，以后登录服务器输入ssh mysever1即可，ssh mysever1 -p &lt;端口号&gt;，可以用某个端口号登入服务器，不加默认为22</p>
+    <h4 id='服务器操作'>服务器操作</h4>
+    <p>ssh mysever1 + &lt;一条命令&gt;</p>
+    <p>即可实现登入服务器，执行命令，然后退出，并将stdout输出到自己的终端</p>
+    <p>命令需要用单引号‘……’或者双引号“……”括起来，用双引号中变量无法解析。（所以都用单引号就好）</p>
+    <p>&nbsp;</p>
+    <p>租服务器后最好创建一个自己的用户，adduser，然后在创建的用户下进行操作，否则容易将服务器搞坏，造成无法挽回的后果。</p>
+    <h2 id='scp'>scp</h2>
+    <p>scp是用于实现不同服务器之间的文件传输，和cp命令很像</p>
+    <h5 id='传输文件'>传输文件：</h5>
+    <p>scp &lt;本地文件路径&gt; &lt;服务器名称: 文件夹路径&gt;</p>
+    <p>例如：scp ./tmp.txt lth: 复制将tmp.txt复制到服务器lth的家目录下</p>
+    <h5 id='传输文件夹'>传输文件夹：</h5>
+    <p>scp -r &lt;本地文件夹路径&gt; &lt;服务器名称: 文件夹路径&gt;</p>
+    <p>例如：scp ./homework lth:/home/arc 复制到lth的家目录下</p>
+    <h5 id='配置vim和tmux'>配置vim和tmux：</h5>
+    <p>实际上只需要将配好的文件复制号到服务器</p>
+    <p>配置vim: scp ~/.vimrc lth:</p>
+    <p>配置tmux: scp ~/.tmux.conf lth:</p>
+    <p>多个文件可以一起复制：</p>
+    <p>scp &lt;文件1&gt; &lt;文件2&gt; &lt;文件3&gt; …… &lt;目标服务器&gt;</p>
+    <p>例如:scp ~/.vimrc ~/.tmux.conf lth: 即可完成vim和tmux的配置。</p>
+    <p>注意：文件参数尽量用单引号，进行运算尽量用双引号。因为单引号不会翻译转译字符，而双引号会。</p>
+    <h2 id='git'>git</h2>
+    <h4 id='三个区域'>三个区域</h4>
+    <p>工作区：建立的文件夹</p>
+    <p>暂存区：写好的文件暂时存放的地方</p>
+    <p>版本库：存储版本的地方，每一个版本由多个文件组成</p>
+    <h4 id='设置初始信息'>设置初始信息</h4>
+    <p>git config --global user.name xxx：设置全局用户名，信息记录在~/.gitconfig文件中</p>
+    <p>git config --global user.email <a href='mailto:xxx@xxx.com' target='_blank'
+            class='url'>xxx@xxx.com</a>：设置全局邮箱地址，信息记录在~/.gitconfig文件中</p>
+    <p>先创建一个文件夹project作为工作区，然后使用git init即可创建git仓库。</p>
+    <h4 id='添加文件'>添加文件</h4>
+    <p>git add a.txt 将a.txt加入暂存区</p>
+    <p>git add . 将工作区所有内容放入暂存区</p>
+    <p>git commit -m &quot;版本信息&quot; 在库中创建一个新结点，存储暂存区的内容，并记录版本信息</p>
+    <h4 id='删除暂存区的内容'>删除暂存区的内容</h4>
+    <p>git restore --staged a.txt 将a.txt从暂存区删除</p>
+    <p>git rm --cached a.txt 将a.txt从暂存区删除，并且设为不管理状态。</p>
+    <h4 id='回滚到指定版本'>回滚到指定版本</h4>
+    <p>git reset --hard HEAD 用HEAD所指向的版本更新工作区</p>
+    <p>git reset --hard HEAD^ 用HEAD上一个结点的版本更新工作区</p>
+    <p>git reset --hard HEAD~10 用HEAD的前十个版本更新工作区</p>
+    <p>git restore 将暂存区的所有文件回滚至工作区</p>
+    <p>git restore a.txt 只将暂存区中的a.txt回滚至工作区</p>
+    <h4 id='展示仓库内容'>展示仓库内容</h4>
+    <p>git log 展示从根节点到HEAD结点的所有版本信息（从下往上看）</p>
+    <p>git reflog 展示git仓库的中的所有操作（从下往上看）</p>
+    <p>注：使用以上两条指令时，每一步前面会有一个编号（前七个字母），用这个编号可以直接将HEAD移动至对应的结点</p>
+    <p>git reset --hard &lt;编号&gt; 将HEAD移动至编号对应的结点，并更新工作区</p>
+    <p>git restore 将暂存区的版本更新到工作区，如果暂存区为空，则用HEAD版本来更新</p>
+    <p>git diff a.txt 和暂存区中的a.txt比对差异，如果暂存区没有这个文件则和HEAD版本来比对</p>
+    <p>git status 显示存储区的状态</p>
+    <p>rm a.txt 后用 git add a.txt 则会保存这个删除操作到暂存区，此时还没有可持久化（存入版本库），用git restore 即可将删除操作撤销（实际上是把HEAD指向的版本的a.txt回滚到工作区）</p>
+    <p>用git invert &lt;编号&gt; 来撤销这个结点的操作</p>
+    <h4 id='连接云端'>连接云端</h4>
+    <p>1、将ssh公钥复制到云端</p>
+    <p>2、在云端创建工程，工程名应当和本地相同</p>
+    <p>3、git push -u origin 将工程上传到云端，第一次需要这么写，只会只需要git push即可</p>
+    <p>4、git clone <a href='mailto:git@git.acwing.com' target='_blank'
+            class='url'>git@git.acwing.com</a>:LTH/project.git 将云端的工程上传到本地（链接可以从版本库中获取）</p>
+    <p>git clone <a href='mailto:git@git.acwing.com' target='_blank'
+            class='url'>git@git.acwing.com</a>:xxx/XXX.git：将远程仓库XXX下载到当前目录下</p>
+    <h4 id='分支'>分支</h4>
+    <p>git checkout -b dev 创建一个名为dev的分支</p>
+    <p>git branch 查看所有分支</p>
+    <p>git checkout master 切换到master目录（master分支是主分支）</p>
+    <p>git branch -d branch_name 删除本地仓库的branch_name分支</p>
+    <p>git merge branch_name 将分支branch_name合并到当前分支上</p>
+    <p>没有冲突：快速合并，直接将主分支及HEAD移动到分支branch_name</p>
+    <p>git branch --set-upstream-to=origin/branch_name1 branch_name2：将远程的branch_name1分支与本地的branch_name2分支对应</p>
+    <p>有冲突：即两个分支都对同一个文件进行了修改，需要人为处理后才能合并。</p>
+    <p>git push --set-upstream origin branch_name：设置本地的branch_name分支对应远程仓库的branch_name分支</p>
+    <p>git push -d origin branch_name：删除远程仓库的branch_name分支</p>
+    <h4 id='多人开发'>多人开发</h4>
+    <p>和队友一起开发时，需要先添加自己的密钥，创建分支，并和版本库中某个分支对应。如果多人操作同一个文件，在git push时会出现冲突，这时需要手动解决冲突才能继续。</p>
+    <h4 id='stash'>stash</h4>
+    <p>git stash：将工作区和暂存区中尚未提交的修改存入栈中
+        git stash apply：将栈顶存储的修改恢复到当前分支，但不删除栈顶元素
+        git stash drop：删除栈顶存储的修改
+        git stash pop：将栈顶存储的修改恢复到当前分支，同时删除栈顶元素
+        git stash list：查看栈中所有元素</p>
+</body>
+
+</html>

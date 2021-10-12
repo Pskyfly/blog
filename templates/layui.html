@@ -1,0 +1,890 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta charset='UTF-8'>
+  <meta name='viewport' content='width=device-width initial-scale=1'>
+  <title>LayUI前端框架学习</title>
+</head>
+
+<body>
+  <!--导航条-->
+  <div class="margin-left:20px">
+    <ul class="layui-nav" lay-filter="">
+      <li class="layui-nav-item"><a style="font-size: large;font-style: italic;">Pskyfly's Blog<a></li>
+      <li class="layui-nav-item layui-col-md-offset8"><a href="/homepage">首页</a></li>
+      <li class="layui-nav-item"><a href="/problems">刷题记录</a></li>
+      <li class="layui-nav-item">
+        <a href="javascript:;">学习笔记</a>
+        <dl class="layui-nav-child">
+          <!-- 二级菜单 -->
+          <dd><a href="/linux">Linux基础</a></dd>
+          <dd><a href="/layui">LayUI框架</a></dd>
+          <dd><a href="/acm">ACM-ICPC训练</a></dd>
+        </dl>
+      </li>
+    </ul>
+  </div>
+  <!--导航条-->
+  <h1 id='layui前端框架学习'>LayUI前端框架学习</h1>
+  <h2 id='前言'>前言</h2>
+  <p>前面完成了对GIN-GORM框架的简单学习，接下来进入对前端框架LayUI的学习。第二场试炼，现在开始！</p>
+  <p>LayUI学习网站：<a href='http://layui.11dz.cn/index.html' target='_blank' class='url'>http://layui.11dz.cn/index.html</a>
+  </p>
+  <h2 id='布局和栅栏系统'>布局和栅栏系统</h2>
+  <h3 id='布局容器）'>布局（容器）</h3>
+  <pre><code class='language-html' lang='html'>&lt;div class=&quot;layui-container&quot; style=&quot;background-color: darkblue;height: 1000px;&quot;&gt; &lt;/div&gt;
+</code></pre>
+  <p>引入关键字class=&quot;layui-container&quot; 即可使用固定布局（两侧有留白）</p>
+  <p>注：不能和栅栏系统嵌套</p>
+  <h3 id='栅栏系统'>栅栏系统</h3>
+  <p>栅栏系统分为很多行和12列，每一行被均分为12列</p>
+  <pre><code class='language-html' lang='html'>&lt;div class=&quot;layui-row&quot;&gt;&lt;!-- 定义一个行 --&gt;
+    &lt;div class=&quot;layui-col-md5&quot; style=&quot;background-color: darkcyan;&quot;&gt;&lt;!--占5列 --&gt;
+     md5
+    &lt;/div&gt;
+    &lt;div class=&quot;layui-col-md6&quot; style=&quot;background-color: rgb(35, 35, 56);&quot;&gt;&lt;!--占6列 --&gt;
+      md6
+    &lt;/div&gt;
+  &lt;/div&gt;
+</code></pre>
+  <p>用<code>&lt;div class=&quot;layui-row&quot;&gt;</code>定义一行文本</p>
+  <p>用<code>&lt;div class=&quot;layui-col-md?&quot;&gt;</code>定义?列，?可以为1-12的数字，如果一行放不下则会放到下一行</p>
+  <h5 id='栅栏系统的响应式规则'>栅栏系统的响应式规则：</h5>
+  <p>xs 超小屏幕（比如手机）</p>
+  <p>xm 小屏幕（小平板）</p>
+  <p>md 中等屏幕(笔记本)</p>
+  <p>lg 大屏幕(大显示器)</p>
+  <p>layui会根据这些关键字选择响应的结果，例如：</p>
+  <p>class=&quot;layui-col-md6&quot; 代表屏幕分辨率为中等屏幕时，占6列</p>
+  <p>class=&quot;layui-col-xm5&quot; 代表屏幕分辨率为小屏幕时，占5列</p>
+  <p>小知识：
+    <hr> 分割线
+  </p>
+  <p>html中的div会在内容外面套一层padding，所以我们需要单独设置一个div用于表示padding(内容的背景)的部分，然后再定义一个div用于表示内容。</p>
+  <h5 id='列间距'>列间距</h5>
+  <pre><code class='language-html' lang='html'>&lt;div class=&quot;layui-row layui-col-space10&quot;&gt;
+      &lt;div class=&quot;layui-col-md6&quot;&gt;
+        &lt;div style=&quot;background-color: burlywood;&quot;&gt;6&lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;layui-col-md6&quot;&gt;
+        &lt;div style=&quot;background-color: palegreen;&quot;&gt;6&lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;layui-col-md6&quot;&gt;
+        &lt;div style=&quot;background-color: wheat;&quot;&gt;6&lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+</code></pre>
+  <p>因为是所有列的属性，所以放在定义行的部分</p>
+  <p><code>layui-col-space?</code> 代表列间距为?px （间距必须在0~30直接，并且必须是2和5的倍数）</p>
+  <p>例如：layui-col-space10代表列间距为10px</p>
+  <p>第一层代表行，第二层代表背景，第三层代表内容</p>
+  <h5 id='列偏移'>列偏移</h5>
+  <p>可以用列偏移方式，让某一列块整体右移</p>
+  <pre><code class='language-html' lang='html'>&lt;div class=&quot;layui-row&quot;&gt;
+      &lt;div class=&quot;layui-col-md3 layui-col-md-offset1&quot;&gt;
+        &lt;div style=&quot;background-color: burlywood;&quot;&gt;6&lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;layui-col-md3 layui-col-md-offset1&quot;&gt;
+        &lt;div style=&quot;background-color: palegreen;&quot;&gt;6&lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;layui-col-md3 layui-col-md-offset1&quot;&gt;
+        &lt;div style=&quot;background-color: wheat;&quot;&gt;6&lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+</code></pre>
+  <p><code>layui-col-md-offset1?</code> 表示向右边偏移？列（md表示中等屏幕适配）</p>
+  <p>例如<code>layui-col-md-offset1</code> 表示向右偏移一列</p>
+  <h5 id='列嵌套'>列嵌套</h5>
+  <p>可以把某个列中继续进行均分为12份</p>
+  <pre><code class='language-html' lang='html'>&lt;div class=&quot;layui-row&quot;&gt;
+      &lt;div class=&quot;layui-col-md3 layui-col-md-offset1&quot;&gt;
+        &lt;div style=&quot;background-color: burlywood;&quot;&gt;
+          &lt;div class=&quot;layui-row&quot;&gt;
+          &lt;div class=&quot;layui-col-md3&quot; style=&quot;background-color: yellow;&quot;&gt;132&lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+</code></pre>
+  <p>嵌套需要在定义行和列，进行更精细化的均分</p>
+  <h2 id='按钮'>按钮</h2>
+  <h3 id='基本按钮'>基本按钮</h3>
+  <pre><code class='language-html' lang='html'>&lt;button class=&quot;layui-btn&quot;&gt;一个按钮&lt;/button&gt;
+&lt;a href=&quot;http://www.acwing.com&quot; class=&quot;layui-btn&quot;&gt;一个链接&lt;/a&gt;
+&lt;div class=&quot;layui-btn&quot;&gt;一个div&lt;/div&gt;
+</code></pre>
+  <p>只要在一个元素后面加上<code>class=&quot;layui-btn&quot;</code>就能变成一个按钮</p>
+  <h3 id='按钮主题'>按钮主题</h3>
+  <h4 id='有色背景'>有色背景</h4>
+  <figure>
+    <table>
+      <thead>
+        <tr>
+          <th style='text-align:left;'>名称</th>
+          <th style='text-align:left;'>组合</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style='text-align:left;'>原始</td>
+          <td style='text-align:left;'>class=&quot;layui-btn layui-btn-primary&quot;</td>
+        </tr>
+        <tr>
+          <td style='text-align:left;'>默认</td>
+          <td style='text-align:left;'>class=&quot;layui-btn&quot;</td>
+        </tr>
+        <tr>
+          <td style='text-align:left;'>百搭</td>
+          <td style='text-align:left;'>class=&quot;layui-btn layui-btn-normal&quot;</td>
+        </tr>
+        <tr>
+          <td style='text-align:left;'>暖色</td>
+          <td style='text-align:left;'>class=&quot;layui-btn layui-btn-warm&quot;</td>
+        </tr>
+        <tr>
+          <td style='text-align:left;'>警告</td>
+          <td style='text-align:left;'>class=&quot;layui-btn layui-btn-danger&quot;</td>
+        </tr>
+        <tr>
+          <td style='text-align:left;'>禁用</td>
+          <td style='text-align:left;'>class=&quot;layui-btn layui-btn-disabled&quot;</td>
+        </tr>
+      </tbody>
+    </table>
+  </figure>
+  <h4 id='有色边框'>有色边框</h4>
+  <p> 百搭按钮 暖色按钮 警告按钮 深色按钮</p>
+  <figure>
+    <table>
+      <thead>
+        <tr>
+          <th style='text-align:left;'>名称</th>
+          <th style='text-align:left;'>组合</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style='text-align:left;'>主色</td>
+          <td style='text-align:left;'>class=&quot;layui-btn layui-btn-primary layui-border-green&quot;</td>
+        </tr>
+        <tr>
+          <td style='text-align:left;'>百搭</td>
+          <td style='text-align:left;'>class=&quot;layui-btn layui-btn-primary layui-border-blue&quot;</td>
+        </tr>
+        <tr>
+          <td style='text-align:left;'>暖色</td>
+          <td style='text-align:left;'>class=&quot;layui-btn layui-btn-primary layui-border-orange&quot;</td>
+        </tr>
+        <tr>
+          <td style='text-align:left;'>警告</td>
+          <td style='text-align:left;'>class=&quot;layui-btn layui-btn-primary layui-border-red&quot;</td>
+        </tr>
+        <tr>
+          <td style='text-align:left;'>深色</td>
+          <td style='text-align:left;'>class=&quot;layui-btn layui-btn-primary layui-border-black&quot;</td>
+        </tr>
+      </tbody>
+    </table>
+  </figure>
+  <h4 id='尺寸'>尺寸</h4>
+  <figure>
+    <table>
+      <thead>
+        <tr>
+          <th style='text-align:left;'>尺寸</th>
+          <th style='text-align:left;'>组合</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style='text-align:left;'>大型</td>
+          <td style='text-align:left;'>class=&quot;layui-btn layui-btn-lg&quot;</td>
+        </tr>
+        <tr>
+          <td style='text-align:left;'>默认</td>
+          <td style='text-align:left;'>class=&quot;layui-btn&quot;</td>
+        </tr>
+        <tr>
+          <td style='text-align:left;'>小型</td>
+          <td style='text-align:left;'>class=&quot;layui-btn layui-btn-sm&quot;</td>
+        </tr>
+        <tr>
+          <td style='text-align:left;'>迷你</td>
+          <td style='text-align:left;'>class=&quot;layui-btn layui-btn-xs&quot;</td>
+        </tr>
+      </tbody>
+    </table>
+  </figure>
+  <h4 id='尺寸与主题结合'>尺寸与主题结合</h4>
+  <figure>
+    <table>
+      <thead>
+        <tr>
+          <th style='text-align:left;'>尺寸</th>
+          <th style='text-align:left;'>组合</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style='text-align:left;'>大型百搭</td>
+          <td style='text-align:left;'>class=&quot;layui-btn layui-btn-lg layui-btn-normal&quot;</td>
+        </tr>
+        <tr>
+          <td style='text-align:left;'>正常暖色</td>
+          <td style='text-align:left;'>class=&quot;layui-btn layui-btn-warm&quot;</td>
+        </tr>
+        <tr>
+          <td style='text-align:left;'>小型警告</td>
+          <td style='text-align:left;'>class=&quot;layui-btn layui-btn-sm layui-btn-danger&quot;</td>
+        </tr>
+        <tr>
+          <td style='text-align:left;'>迷你禁用</td>
+          <td style='text-align:left;'>class=&quot;layui-btn layui-btn-xs layui-btn-disabled&quot;</td>
+        </tr>
+      </tbody>
+    </table>
+  </figure>
+  <h4 id='左右最大化'>左右最大化</h4>
+  <pre><code class='language-hmtl' lang='hmtl'>&lt;button type=&quot;button&quot; class=&quot;layui-btn layui-btn-fluid&quot;&gt;流体按钮（最大化适应）&lt;/button&gt;
+</code></pre>
+  <h4 id='圆角'>圆角</h4>
+  <p>在class中加上</p>
+  <pre><code>layui-btn-radius
+</code></pre>
+  <p>例如：</p>
+  <figure>
+    <table>
+      <thead>
+        <tr>
+          <th style='text-align:left;'>主题</th>
+          <th style='text-align:left;'>组合</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style='text-align:left;'>原始</td>
+          <td style='text-align:left;'>class=&quot;layui-btn layui-btn-radius layui-btn-primary&quot;</td>
+        </tr>
+        <tr>
+          <td style='text-align:left;'>默认</td>
+          <td style='text-align:left;'>class=&quot;layui-btn layui-btn-radius&quot;</td>
+        </tr>
+        <tr>
+          <td style='text-align:left;'>百搭</td>
+          <td style='text-align:left;'>class=&quot;layui-btn layui-btn-radius layui-btn-normal&quot;</td>
+        </tr>
+        <tr>
+          <td style='text-align:left;'>暖色</td>
+          <td style='text-align:left;'>class=&quot;layui-btn layui-btn-radius layui-btn-warm&quot;</td>
+        </tr>
+        <tr>
+          <td style='text-align:left;'>警告</td>
+          <td style='text-align:left;'>class=&quot;layui-btn layui-btn-radius layui-btn-danger&quot;</td>
+        </tr>
+        <tr>
+          <td style='text-align:left;'>禁用</td>
+          <td style='text-align:left;'>class=&quot;layui-btn layui-btn-radius layui-btn-disabled&quot;</td>
+        </tr>
+      </tbody>
+    </table>
+  </figure>
+  <p>注：上面的主题，尺寸，圆角等，都能自由组合</p>
+  <h4 id='图标'>图标</h4>
+  <p>图标所有样式：<a href='http://layui.11dz.cn/doc/element/icon.html' target='_blank'
+      class='url'>http://layui.11dz.cn/doc/element/icon.html</a></p>
+  <p>定义一个图标：</p>
+  <pre><code class='language-html' lang='html'>&lt;i class=&quot;layui-icon layui-icon-down layui-font-12&quot;&gt;&lt;/i&gt;
+</code></pre>
+  <p>图标与按钮嵌套：</p>
+  <pre><code class='language-html' lang='html'>&lt;button type=&quot;button&quot; class=&quot;layui-btn&quot;&gt;
+  &lt;i class=&quot;layui-icon layui-icon-down layui-font-12&quot;&gt;&lt;/i&gt; 按钮
+&lt;/button&gt;
+</code></pre>
+  <h4 id='按钮组'>按钮组</h4>
+  <p>可以将多个按钮并列放在一起，中间会有白线分割</p>
+  <pre><code class='language-html' lang='html'>&lt;div class=&quot;layui-btn-group&quot;&gt;
+  &lt;button type=&quot;button&quot; class=&quot;layui-btn&quot;&gt;增加&lt;/button&gt;
+  &lt;button type=&quot;button&quot; class=&quot;layui-btn&quot;&gt;编辑&lt;/button&gt;
+  &lt;button type=&quot;button&quot; class=&quot;layui-btn&quot;&gt;删除&lt;/button&gt;
+&lt;/div&gt;
+</code></pre>
+  <h4 id='按钮容器'>按钮容器</h4>
+  <p>可以分为多个等间距的按钮，按钮过多时会自动换行。</p>
+  <pre><code class='language-html' lang='html'>&lt;div class=&quot;layui-btn-container&quot;&gt;
+  &lt;button type=&quot;button&quot; class=&quot;layui-btn&quot;&gt;按钮一&lt;/button&gt; 
+  &lt;button type=&quot;button&quot; class=&quot;layui-btn&quot;&gt;按钮二&lt;/button&gt; 
+  &lt;button type=&quot;button&quot; class=&quot;layui-btn&quot;&gt;按钮三&lt;/button&gt; 
+&lt;/div&gt;
+</code></pre>
+  <h2 id='导航条'>导航条</h2>
+  <h3 id='水平导航'>水平导航</h3>
+  <pre><code class='language-html' lang='html'>&lt;ul class=&quot;layui-nav&quot; lay-filter=&quot;&quot;&gt;
+  &lt;li class=&quot;layui-nav-item&quot;&gt;&lt;a href=&quot;&quot;&gt;最新活动&lt;/a&gt;&lt;/li&gt;
+  &lt;li class=&quot;layui-nav-item layui-this&quot;&gt;&lt;a href=&quot;&quot;&gt;产品&lt;/a&gt;&lt;/li&gt;
+  &lt;li class=&quot;layui-nav-item&quot;&gt;&lt;a href=&quot;&quot;&gt;大数据&lt;/a&gt;&lt;/li&gt;
+  &lt;li class=&quot;layui-nav-item&quot;&gt;
+    &lt;a href=&quot;javascript:;&quot;&gt;解决方案&lt;/a&gt;
+    &lt;dl class=&quot;layui-nav-child&quot;&gt; &lt;!-- 二级菜单 --&gt;
+      &lt;dd&gt;&lt;a href=&quot;&quot;&gt;移动模块&lt;/a&gt;&lt;/dd&gt;
+      &lt;dd&gt;&lt;a href=&quot;&quot;&gt;后台模版&lt;/a&gt;&lt;/dd&gt;
+      &lt;dd&gt;&lt;a href=&quot;&quot;&gt;电商平台&lt;/a&gt;&lt;/dd&gt;
+    &lt;/dl&gt;
+  &lt;/li&gt;
+  &lt;li class=&quot;layui-nav-item&quot;&gt;&lt;a href=&quot;&quot;&gt;社区&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+ 
+&lt;script&gt;
+//注意：导航 依赖 element 模块，否则无法进行功能性操作
+layui.use(&#39;element&#39;, function(){
+  var element = layui.element;
+  
+  //…
+});
+&lt;/script&gt;
+      
+</code></pre>
+  <p>加上<code>class=&quot;layui-nav&quot;</code>即可设置为水平导航</p>
+  <p><code>class=&quot;layui-nav-item&quot;</code> 表示导航选项</p>
+  <p>可以在其中嵌套<code>&lt;a href=&quot;&quot;&gt; &lt;/a&gt;</code>来实现跳转</p>
+  <p><code>&lt;span class=&quot;layui-badge&quot;&gt;9&lt;/span&gt;</code> 用于添加数字图标</p>
+  <p><code>&lt;span class=&quot;layui-badge-dot&quot;&gt;&lt;/span&gt;</code> 用于添加小圆点</p>
+  <p><code>lay-filter=&quot;&quot;</code>和事件相关</p>
+  <figure>
+    <table>
+      <thead>
+        <tr>
+          <th style='text-align:left;'>属性</th>
+          <th style='text-align:left;'>描述</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style='text-align:left;'>lay-skin=&quot; &quot;</td>
+          <td style='text-align:left;'>定义相同元素的不同风格，如checkbox的开关风格</td>
+        </tr>
+        <tr>
+          <td style='text-align:left;'>lay-filter=&quot; &quot;</td>
+          <td style='text-align:left;'>事件过滤器。你可能会在很多地方看到他，他一般是用于监听特定的自定义事件。你可以把它看作是一个ID选择器</td>
+        </tr>
+        <tr>
+          <td style='text-align:left;'>lay-submit</td>
+          <td style='text-align:left;'>定义一个触发表单提交的button，不用填写值</td>
+        </tr>
+      </tbody>
+    </table>
+  </figure>
+  <p>可以用<code>layui-bg-green</code>改变颜色</p>
+  <p>水平导航支持的其它背景主题有：<em>layui-bg-cyan</em>（藏青）、<em>layui-bg-molv</em>（墨绿）、<em>layui-bg-blue</em>（艳蓝）
+    垂直导航支持的其它背景主题有：<em>layui-bg-cyan</em>（藏青）</p>
+  <h3 id='垂直导航'>垂直导航</h3>
+  <pre><code class='language-html' lang='html'>&lt;ul class=&quot;layui-nav layui-nav-tree&quot; lay-filter=&quot;test&quot;&gt;
+&lt;!-- 侧边导航: &lt;ul class=&quot;layui-nav layui-nav-tree layui-nav-side&quot;&gt; --&gt;
+  &lt;li class=&quot;layui-nav-item layui-nav-itemed&quot;&gt;
+    &lt;a href=&quot;javascript:;&quot;&gt;默认展开&lt;/a&gt;
+    &lt;dl class=&quot;layui-nav-child&quot;&gt;
+      &lt;dd&gt;&lt;a href=&quot;javascript:;&quot;&gt;选项1&lt;/a&gt;&lt;/dd&gt;
+      &lt;dd&gt;&lt;a href=&quot;javascript:;&quot;&gt;选项2&lt;/a&gt;&lt;/dd&gt;
+      &lt;dd&gt;&lt;a href=&quot;&quot;&gt;跳转&lt;/a&gt;&lt;/dd&gt;
+    &lt;/dl&gt;
+  &lt;/li&gt;
+  &lt;li class=&quot;layui-nav-item&quot;&gt;
+    &lt;a href=&quot;javascript:;&quot;&gt;解决方案&lt;/a&gt;
+    &lt;dl class=&quot;layui-nav-child&quot;&gt;
+      &lt;dd&gt;&lt;a href=&quot;&quot;&gt;移动模块&lt;/a&gt;&lt;/dd&gt;
+      &lt;dd&gt;&lt;a href=&quot;&quot;&gt;后台模版&lt;/a&gt;&lt;/dd&gt;
+      &lt;dd&gt;&lt;a href=&quot;&quot;&gt;电商平台&lt;/a&gt;&lt;/dd&gt;
+    &lt;/dl&gt;
+  &lt;/li&gt;
+  &lt;li class=&quot;layui-nav-item&quot;&gt;&lt;a href=&quot;&quot;&gt;产品&lt;/a&gt;&lt;/li&gt;
+  &lt;li class=&quot;layui-nav-item&quot;&gt;&lt;a href=&quot;&quot;&gt;大数据&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</code></pre>
+  <h3 id='侧边导航'>侧边导航</h3>
+  <p>加上<code>layui-nav-side</code> 即可</p>
+  <p>水平、垂直、侧边三个导航的HTML结构是完全一样的，不同的是：</p>
+  <p>垂直导航需要追加class：<em>layui-nav-tree</em>
+    侧边导航需要追加class：<em>layui-nav-tree layui-nav-side</em></p>
+  <h3 id='面包屑导航'>面包屑导航</h3>
+  <pre><code class='language-html' lang='html'>&lt;span class=&quot;layui-breadcrumb&quot; lay-separator=&quot;-&quot;&gt;
+  &lt;a href=&quot;&quot;&gt;首页&lt;/a&gt;
+  &lt;a href=&quot;&quot;&gt;国际新闻&lt;/a&gt;
+  &lt;a href=&quot;&quot;&gt;亚太地区&lt;/a&gt;
+  &lt;a&gt;&lt;cite&gt;正文&lt;/cite&gt;&lt;/a&gt;
+&lt;/span&gt;
+      
+</code></pre>
+  <p><code>lay-separator=&quot;-&quot;</code>可以用于设置分隔符</p>
+  <p>导航条中也可以用<code>layui-col-md-offset7</code>来设置偏移</p>
+  <h3 id='选项卡'>选项卡</h3>
+  <p>默认选项卡</p>
+  <pre><code>&lt;div class=&quot;layui-tab&quot;&gt;
+  &lt;ul class=&quot;layui-tab-title&quot;&gt;
+    &lt;li class=&quot;layui-this&quot;&gt;网站设置&lt;/li&gt;
+    &lt;li&gt;用户管理&lt;/li&gt;
+    &lt;li&gt;权限分配&lt;/li&gt;
+    &lt;li&gt;商品管理&lt;/li&gt;
+    &lt;li&gt;订单管理&lt;/li&gt;
+  &lt;/ul&gt;
+  &lt;div class=&quot;layui-tab-content&quot;&gt;
+    &lt;div class=&quot;layui-tab-item layui-show&quot;&gt;内容1&lt;/div&gt;
+    &lt;div class=&quot;layui-tab-item&quot;&gt;内容2&lt;/div&gt;
+    &lt;div class=&quot;layui-tab-item&quot;&gt;内容3&lt;/div&gt;
+    &lt;div class=&quot;layui-tab-item&quot;&gt;内容4&lt;/div&gt;
+    &lt;div class=&quot;layui-tab-item&quot;&gt;内容5&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+ 
+&lt;script&gt;
+//注意：选项卡 依赖 element 模块，否则无法进行功能性操作
+layui.use(&#39;element&#39;, function(){
+  var element = layui.element;
+  
+  //…
+});
+&lt;/script&gt;
+</code></pre>
+  <h3 id='tab简洁风格'>Tab简洁风格</h3>
+  <pre><code>&lt;div class=&quot;layui-tab layui-tab-brief&quot; lay-filter=&quot;docDemoTabBrief&quot;&gt;
+  &lt;ul class=&quot;layui-tab-title&quot;&gt;
+    &lt;li class=&quot;layui-this&quot;&gt;网站设置&lt;/li&gt;
+    &lt;li&gt;用户管理&lt;/li&gt;
+    &lt;li&gt;权限分配&lt;/li&gt;
+    &lt;li&gt;商品管理&lt;/li&gt;
+    &lt;li&gt;订单管理&lt;/li&gt;
+  &lt;/ul&gt;
+  &lt;div class=&quot;layui-tab-content&quot;&gt;&lt;/div&gt;
+&lt;/div&gt;  
+</code></pre>
+  <h3 id='风格设置'>风格设置</h3>
+  <pre><code>&lt;div class=&quot;layui-tab layui-tab-card&quot;&gt;
+  &lt;ul class=&quot;layui-tab-title&quot;&gt;
+    &lt;li class=&quot;layui-this&quot;&gt;网站设置&lt;/li&gt;
+    &lt;li&gt;用户管理&lt;/li&gt;
+    &lt;li&gt;权限分配&lt;/li&gt;
+    &lt;li&gt;商品管理&lt;/li&gt;
+    &lt;li&gt;订单管理&lt;/li&gt;
+  &lt;/ul&gt;
+  &lt;div class=&quot;layui-tab-content&quot; style=&quot;height: 100px;&quot;&gt;
+    &lt;div class=&quot;layui-tab-item layui-show&quot;&gt;1&lt;/div&gt;
+    &lt;div class=&quot;layui-tab-item&quot;&gt;2&lt;/div&gt;
+    &lt;div class=&quot;layui-tab-item&quot;&gt;3&lt;/div&gt;
+    &lt;div class=&quot;layui-tab-item&quot;&gt;4&lt;/div&gt;
+    &lt;div class=&quot;layui-tab-item&quot;&gt;5&lt;/div&gt;
+    &lt;div class=&quot;layui-tab-item&quot;&gt;6&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+  <h3 id='带删除的选项卡'>带删除的选项卡</h3>
+  <pre><code>&lt;div class=&quot;layui-tab&quot; lay-allowClose=&quot;true&quot;&gt;
+  &lt;ul class=&quot;layui-tab-title&quot;&gt;
+    &lt;li class=&quot;layui-this&quot;&gt;网站设置&lt;/li&gt;
+    &lt;li&gt;用户基本管理&lt;/li&gt;
+    &lt;li&gt;权限分配&lt;/li&gt;
+    &lt;li&gt;全部历史商品管理文字长一点试试&lt;/li&gt;
+    &lt;li&gt;订单管理&lt;/li&gt;
+  &lt;/ul&gt;
+  &lt;div class=&quot;layui-tab-content&quot;&gt;
+    &lt;div class=&quot;layui-tab-item layui-show&quot;&gt;1&lt;/div&gt;
+    &lt;div class=&quot;layui-tab-item&quot;&gt;2&lt;/div&gt;
+    &lt;div class=&quot;layui-tab-item&quot;&gt;3&lt;/div&gt;
+    &lt;div class=&quot;layui-tab-item&quot;&gt;4&lt;/div&gt;
+    &lt;div class=&quot;layui-tab-item&quot;&gt;5&lt;/div&gt;
+    &lt;div class=&quot;layui-tab-item&quot;&gt;6&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+      
+</code></pre>
+  <h2 id='表格'>表格</h2>
+  <pre><code>&lt;table class=&quot;layui-table&quot;&gt;
+  &lt;colgroup&gt;
+    &lt;col width=&quot;150&quot;&gt;
+    &lt;col width=&quot;200&quot;&gt;
+    &lt;col&gt;
+  &lt;/colgroup&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;昵称&lt;/th&gt;
+      &lt;th&gt;加入时间&lt;/th&gt;
+      &lt;th&gt;签名&lt;/th&gt;
+    &lt;/tr&gt; 
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;贤心&lt;/td&gt;
+      &lt;td&gt;2016-11-29&lt;/td&gt;
+      &lt;td&gt;人生就像是一场修行&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;许闲心&lt;/td&gt;
+      &lt;td&gt;2016-11-28&lt;/td&gt;
+      &lt;td&gt;于千万人之中遇见你所遇见的人，于千万年之中，时间的无涯的荒野里…&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+</code></pre>
+  <h4 id='基础属性'>基础属性</h4>
+  <p>静态表格支持以下基础属性，可定义不同风格/尺寸的表格样式：</p>
+  <figure>
+    <table>
+      <thead>
+        <tr>
+          <th style='text-align:left;'>属性名</th>
+          <th style='text-align:left;'>属性值</th>
+          <th style='text-align:left;'>备注</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style='text-align:left;'>lay-even</td>
+          <td style='text-align:left;'>无</td>
+          <td style='text-align:left;'>用于开启隔行背景，可与其它属性一起使用</td>
+        </tr>
+        <tr>
+          <td style='text-align:left;'>lay-skin=&quot;属性值&quot;</td>
+          <td style='text-align:left;'>line （行边框风格） row （列边框风格） nob （无边框风格）</td>
+          <td style='text-align:left;'>若使用默认风格不设置该属性即可</td>
+        </tr>
+        <tr>
+          <td style='text-align:left;'>lay-size=&quot;属性值&quot;</td>
+          <td style='text-align:left;'>sm （小尺寸） lg （大尺寸）</td>
+          <td style='text-align:left;'>若使用默认尺寸不设置该属性即可</td>
+        </tr>
+      </tbody>
+    </table>
+  </figure>
+  <h4 id='其他属性'>其他属性</h4>
+  <pre><code class='language-html' lang='html'>&lt;table class=&quot;layui-table&quot; lay-skin=&quot;line&quot;&gt;
+  行边框表格（内部结构参见右侧目录“常规用法”）
+&lt;/table&gt;
+ 
+&lt;table class=&quot;layui-table&quot; lay-skin=&quot;row&quot;&gt;
+  列边框表格（内部结构参见右侧目录“常规用法”）
+&lt;/table&gt;
+ 
+&lt;table class=&quot;layui-table&quot; lay-even lay-skin=&quot;nob&quot;&gt;
+  无边框表格（内部结构参见右侧目录“常规用法”）
+&lt;/table&gt;
+      
+</code></pre>
+  <h2 id='表单'>表单</h2>
+  <h3 id='基本结构-1'>基本结构</h3>
+  <p>下述是基本的行区块结构，它提供了响应式的支持。但如果你不大喜欢，你可以换成你的结构，但必须要在外层容器中定义<em>class=&quot;layui-form&quot;</em>，form模块才能正常工作。</p>
+  <pre><code class='language-html' lang='html'>&lt;div class=&quot;layui-form-item&quot;&gt;
+  &lt;label class=&quot;layui-form-label&quot;&gt;标签区域&lt;/label&gt;
+  &lt;div class=&quot;layui-input-block&quot;&gt;
+    原始表单元素区域
+  &lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+  <h3 id='输入框'>输入框</h3>
+  <pre><code class='language-html' lang='html'>&lt;input type=&quot;text&quot; name=&quot;title&quot; required lay-verify=&quot;required&quot; placeholder=&quot;请输入标题&quot; autocomplete=&quot;off&quot; class=&quot;layui-input&quot;&gt;  
+</code></pre>
+  <p><em>required</em>：注册浏览器所规定的必填字段
+    <em>lay-verify</em>：注册form模块需要验证的类型
+    <em>class=&quot;layui-input&quot;</em>：layui.css提供的通用CSS类（样式）
+  </p>
+  <h3 id='下拉框'>下拉框</h3>
+  <h4 id='基本结构-2'>基本结构</h4>
+  <pre><code class='language-html' lang='html'>&lt;select name=&quot;city&quot; lay-verify=&quot;&quot;&gt;
+  &lt;option value=&quot;&quot;&gt;请选择一个城市&lt;/option&gt;
+  &lt;option value=&quot;010&quot;&gt;北京&lt;/option&gt;
+  &lt;option value=&quot;021&quot;&gt;上海&lt;/option&gt;
+  &lt;option value=&quot;0571&quot;&gt;杭州&lt;/option&gt;
+&lt;/select&gt;     
+</code></pre>
+  <p>在选项中通过设定 <em>selected</em> 来设定默认选中项，设定 <em>disabled</em> 来禁用选中项</p>
+  <pre><code class='language-html' lang='html'>&lt;select name=&quot;city&quot; lay-verify=&quot;&quot;&gt;
+  &lt;option value=&quot;010&quot;&gt;北京&lt;/option&gt;
+  &lt;option value=&quot;021&quot; disabled&gt;上海（禁用效果）&lt;/option&gt;
+  &lt;option value=&quot;0571&quot; selected&gt;杭州&lt;/option&gt;
+&lt;/select&gt;   
+</code></pre>
+  <p>你还可以通过 <em>optgroup</em> 标签给select分组：</p>
+  <pre><code class='language-html' lang='html'>&lt;select name=&quot;quiz&quot;&gt;
+  &lt;option value=&quot;&quot;&gt;请选择&lt;/option&gt;
+  &lt;optgroup label=&quot;城市记忆&quot;&gt;
+    &lt;option value=&quot;你工作的第一个城市&quot;&gt;你工作的第一个城市？&lt;/option&gt;
+  &lt;/optgroup&gt;
+  &lt;optgroup label=&quot;学生时代&quot;&gt;
+    &lt;option value=&quot;你的工号&quot;&gt;你的工号？&lt;/option&gt;
+    &lt;option value=&quot;你最喜欢的老师&quot;&gt;你最喜欢的老师？&lt;/option&gt;
+  &lt;/optgroup&gt;
+&lt;/select&gt;
+</code></pre>
+  <p>以及通过设定属性 <em>lay-search</em> 来开启搜索匹配功能</p>
+  <pre><code class='language-html' lang='html'>&lt;select name=&quot;city&quot; lay-verify=&quot;&quot; lay-search&gt;
+  &lt;option value=&quot;010&quot;&gt;layer&lt;/option&gt;
+  &lt;option value=&quot;021&quot;&gt;form&lt;/option&gt;
+  &lt;option value=&quot;0571&quot; selected&gt;layim&lt;/option&gt;
+  ……
+&lt;/select&gt;     
+</code></pre>
+  <h3 id='复选框'>复选框</h3>
+  <pre><code class='language-html' lang='html'>默认风格：
+&lt;input type=&quot;checkbox&quot; name=&quot;&quot; title=&quot;写作&quot; checked&gt;
+&lt;input type=&quot;checkbox&quot; name=&quot;&quot; title=&quot;发呆&quot;&gt; 
+&lt;input type=&quot;checkbox&quot; name=&quot;&quot; title=&quot;禁用&quot; disabled&gt; 
+ 
+原始风格：
+&lt;input type=&quot;checkbox&quot; name=&quot;&quot; title=&quot;写作&quot; lay-skin=&quot;primary&quot; checked&gt;
+&lt;input type=&quot;checkbox&quot; name=&quot;&quot; title=&quot;发呆&quot; lay-skin=&quot;primary&quot;&gt; 
+&lt;input type=&quot;checkbox&quot; name=&quot;&quot; title=&quot;禁用&quot; lay-skin=&quot;primary&quot; disabled&gt; 
+      
+</code></pre>
+  <p>属性<em>title</em>可自定义文本（温馨提示：如果只想显示复选框，可以不用设置title）
+    属性<em>checked</em>可设定默认选中
+    属性<em>lay-skin</em>可设置复选框的风格
+    设置<em>value=&quot;1&quot;</em>可自定义值，否则选中时返回的就是默认的on</p>
+  <h3 id='开关'>开关</h3>
+  <p>其实就是checkbox复选框的“变种”，通过设定 <em>lay-skin=&quot;switch&quot;</em> 形成了开关风格</p>
+  <pre><code class='language-html' lang='html'>&lt;input type=&quot;checkbox&quot; name=&quot;xxx&quot; lay-skin=&quot;switch&quot;&gt;
+&lt;input type=&quot;checkbox&quot; name=&quot;yyy&quot; lay-skin=&quot;switch&quot; lay-text=&quot;ON|OFF&quot; checked&gt;
+&lt;input type=&quot;checkbox&quot; name=&quot;zzz&quot; lay-skin=&quot;switch&quot; lay-text=&quot;开启|关闭&quot;&gt;
+&lt;input type=&quot;checkbox&quot; name=&quot;aaa&quot; lay-skin=&quot;switch&quot; disabled&gt;
+</code></pre>
+  <p>属性<em>checked</em>可设定默认开
+    属性<em>disabled</em>开启禁用
+    属性<em>lay-text</em>可自定义开关两种状态的文本，用|分隔
+    设置<em>value=&quot;1&quot;</em>可自定义值，否则选中时返回的就是默认的on</p>
+  <h3 id='单选框'>单选框</h3>
+  <pre><code class='language-html' lang='html'>&lt;input type=&quot;radio&quot; name=&quot;sex&quot; value=&quot;nan&quot; title=&quot;男&quot;&gt;
+&lt;input type=&quot;radio&quot; name=&quot;sex&quot; value=&quot;nv&quot; title=&quot;女&quot; checked&gt;
+&lt;input type=&quot;radio&quot; name=&quot;sex&quot; value=&quot;&quot; title=&quot;中性&quot; disabled&gt;
+</code></pre>
+  <p>属性<em>title</em>可自定义文本
+    属性<em>disabled</em>开启禁用
+    设置<em>value=&quot;xxx&quot;</em>可自定义值，否则选中时返回的就是默认的on</p>
+  <h3 id='文本域'>文本域</h3>
+  <pre><code class='language-html' lang='html'>&lt;textarea name=&quot;&quot; required lay-verify=&quot;required&quot; placeholder=&quot;请输入&quot; class=&quot;layui-textarea&quot;&gt;&lt;/textarea&gt;
+</code></pre>
+  <p><em>class=&quot;layui-textarea&quot;</em>：layui.css提供的通用CSS类</p>
+  <h3 id='一个完成的表单实例'>一个完成的表单实例</h3>
+  <pre><code class='language-html' lang='html'>&lt;form class=&quot;layui-form&quot; action=&quot;&quot;&gt;
+  &lt;div class=&quot;layui-form-item&quot;&gt;
+    &lt;label class=&quot;layui-form-label&quot;&gt;输入框&lt;/label&gt;
+    &lt;div class=&quot;layui-input-block&quot;&gt;
+      &lt;input type=&quot;text&quot; name=&quot;title&quot; required  lay-verify=&quot;required&quot; placeholder=&quot;请输入标题&quot; autocomplete=&quot;off&quot; class=&quot;layui-input&quot;&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;layui-form-item&quot;&gt;
+    &lt;label class=&quot;layui-form-label&quot;&gt;密码框&lt;/label&gt;
+    &lt;div class=&quot;layui-input-inline&quot;&gt;
+      &lt;input type=&quot;password&quot; name=&quot;password&quot; required lay-verify=&quot;required&quot; placeholder=&quot;请输入密码&quot; autocomplete=&quot;off&quot; class=&quot;layui-input&quot;&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;layui-form-mid layui-word-aux&quot;&gt;辅助文字&lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;layui-form-item&quot;&gt;
+    &lt;label class=&quot;layui-form-label&quot;&gt;选择框&lt;/label&gt;
+    &lt;div class=&quot;layui-input-block&quot;&gt;
+      &lt;select name=&quot;city&quot; lay-verify=&quot;required&quot;&gt;
+        &lt;option value=&quot;&quot;&gt;&lt;/option&gt;
+        &lt;option value=&quot;0&quot;&gt;北京&lt;/option&gt;
+        &lt;option value=&quot;1&quot;&gt;上海&lt;/option&gt;
+        &lt;option value=&quot;2&quot;&gt;广州&lt;/option&gt;
+        &lt;option value=&quot;3&quot;&gt;深圳&lt;/option&gt;
+        &lt;option value=&quot;4&quot;&gt;杭州&lt;/option&gt;
+      &lt;/select&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;layui-form-item&quot;&gt;
+    &lt;label class=&quot;layui-form-label&quot;&gt;复选框&lt;/label&gt;
+    &lt;div class=&quot;layui-input-block&quot;&gt;
+      &lt;input type=&quot;checkbox&quot; name=&quot;like[write]&quot; title=&quot;写作&quot;&gt;
+      &lt;input type=&quot;checkbox&quot; name=&quot;like[read]&quot; title=&quot;阅读&quot; checked&gt;
+      &lt;input type=&quot;checkbox&quot; name=&quot;like[dai]&quot; title=&quot;发呆&quot;&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;layui-form-item&quot;&gt;
+    &lt;label class=&quot;layui-form-label&quot;&gt;开关&lt;/label&gt;
+    &lt;div class=&quot;layui-input-block&quot;&gt;
+      &lt;input type=&quot;checkbox&quot; name=&quot;switch&quot; lay-skin=&quot;switch&quot;&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;layui-form-item&quot;&gt;
+    &lt;label class=&quot;layui-form-label&quot;&gt;单选框&lt;/label&gt;
+    &lt;div class=&quot;layui-input-block&quot;&gt;
+      &lt;input type=&quot;radio&quot; name=&quot;sex&quot; value=&quot;男&quot; title=&quot;男&quot;&gt;
+      &lt;input type=&quot;radio&quot; name=&quot;sex&quot; value=&quot;女&quot; title=&quot;女&quot; checked&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;layui-form-item layui-form-text&quot;&gt;
+    &lt;label class=&quot;layui-form-label&quot;&gt;文本域&lt;/label&gt;
+    &lt;div class=&quot;layui-input-block&quot;&gt;
+      &lt;textarea name=&quot;desc&quot; placeholder=&quot;请输入内容&quot; class=&quot;layui-textarea&quot;&gt;&lt;/textarea&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;layui-form-item&quot;&gt;
+    &lt;div class=&quot;layui-input-block&quot;&gt;
+      &lt;button class=&quot;layui-btn&quot; lay-submit lay-filter=&quot;formDemo&quot;&gt;立即提交&lt;/button&gt;
+      &lt;button type=&quot;reset&quot; class=&quot;layui-btn layui-btn-primary&quot;&gt;重置&lt;/button&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/form&gt;
+ 
+&lt;script&gt;
+//Demo
+layui.use(&#39;form&#39;, function(){
+  var form = layui.form;
+  
+  //监听提交
+  form.on(&#39;submit(formDemo)&#39;, function(data){
+    layer.msg(JSON.stringify(data.field));
+    return false;
+  });
+});
+&lt;/script&gt;
+      
+</code></pre>
+  <h3 id='其他'>其他</h3>
+  <p>为表单的title追加边框</p>
+  <pre><code class='language-html' lang='html'>&lt;form class=&quot;layui-form layui-form-pane&quot; action=&quot;&quot;&gt;
+</code></pre>
+  <p>忽略渲染效果（不推荐）<em>lay-ignore</em></p>
+  <h3 id='弹出层'>弹出层</h3>
+  <h4 id='基本使用方法'>基本使用方法</h4>
+  <pre><code class='language-html' lang='html'>layui.use(&#39;layer&#39;, function(){
+  var layer = layui.layer;
+  layer.msg(&#39;hello&#39;);
+}); 
+</code></pre>
+  <p>放入script中即可</p>
+  <h3 id='type'>type</h3>
+  <p>类型：Number，默认：0</p>
+  <p>layer提供了5种层类型。可传入的值有：<em>0</em>（信息框，默认）<em>1</em>（页面层）<em>2</em>（iframe层）<em>3</em>（加载层）<em>4</em>（tips层）。 若你采用
+    <em>layer.open({type: 1})</em>方式调用，则type为必填项（信息框除外）
+  </p>
+  <h3 id='title---标题'>title - 标题</h3>
+  <p>类型：String/Array/Boolean，默认：&#39;信息&#39;</p>
+  <p>title支持三种类型的值，若你传入的是普通的字符串，如<em>title :&#39;我是标题&#39;</em>，那么只会改变标题文本；若你还需要自定义标题区域样式，那么你可以<em>title: [&#39;文本&#39;,
+      &#39;font-size:18px;&#39;]</em>，数组第二项可以写任意css样式；如果你不想显示标题栏，你可以<em>title: false</em></p>
+  <h3 id='content---内容'>content - 内容</h3>
+  <pre><code class='language-html' lang='html'>/!*
+ 如果是页面层
+ */
+layer.open({
+  type: 1, 
+  content: &#39;传入任意的文本或html&#39; //这里content是一个普通的String
+});
+layer.open({
+  type: 1,
+  content: $(&#39;#id&#39;) //这里content是一个DOM，注意：最好该元素要存放在body最外层，否则可能被其它的相对元素所影响
+});
+//Ajax获取
+$.post(&#39;url&#39;, {}, function(str){
+  layer.open({
+    type: 1,
+    content: str //注意，如果str是object，那么需要字符拼接。
+  });
+});
+/!*
+ 如果是iframe层
+ */
+layer.open({
+  type: 2, 
+  content: &#39;http://sentsin.com&#39; //这里content是一个URL，如果你不想让iframe出现滚动条，你还可以content: [&#39;http://sentsin.com&#39;, &#39;no&#39;]
+}); 
+/!*
+ 如果是用layer.open执行tips层
+ */
+layer.open({
+  type: 4,
+  content: [&#39;内容&#39;, &#39;#id&#39;] //数组第二项即吸附元素选择器或者DOM
+});  
+</code></pre>
+  <h3 id='area---宽高'>area - 宽高</h3>
+  <p>类型：String/Array，默认：&#39;auto&#39;</p>
+  <p>在默认状态下，layer是宽高都自适应的，但当你只想定义宽度时，你可以<em>area: &#39;500px&#39;</em>，高度仍然是自适应的。当你宽高都要定义时，你可以<em>area:
+      [&#39;500px&#39;, &#39;300px&#39;]</em></p>
+  <h3 id='offset---坐标'>offset - 坐标</h3>
+  <p>类型：String/Array，默认：垂直水平居中</p>
+  <p>offset默认情况下不用设置。但如果你不想垂直水平居中，你还可以进行以下赋值：</p>
+  <figure>
+    <table>
+      <thead>
+        <tr>
+          <th style='text-align:left;'>值</th>
+          <th style='text-align:left;'>备注</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style='text-align:left;'>offset: &#39;auto&#39;</td>
+          <td style='text-align:left;'>默认坐标，即垂直水平居中</td>
+        </tr>
+        <tr>
+          <td style='text-align:left;'>offset: &#39;100px&#39;</td>
+          <td style='text-align:left;'>只定义top坐标，水平保持居中</td>
+        </tr>
+        <tr>
+          <td style='text-align:left;'>offset: [&#39;100px&#39;, &#39;50px&#39;]</td>
+          <td style='text-align:left;'>同时定义top、left坐标</td>
+        </tr>
+        <tr>
+          <td style='text-align:left;'>offset: &#39;t&#39;</td>
+          <td style='text-align:left;'>快捷设置顶部坐标</td>
+        </tr>
+        <tr>
+          <td style='text-align:left;'>offset: &#39;r&#39;</td>
+          <td style='text-align:left;'>快捷设置右边缘坐标</td>
+        </tr>
+        <tr>
+          <td style='text-align:left;'>offset: &#39;b&#39;</td>
+          <td style='text-align:left;'>快捷设置底部坐标</td>
+        </tr>
+        <tr>
+          <td style='text-align:left;'>offset: &#39;l&#39;</td>
+          <td style='text-align:left;'>快捷设置左边缘坐标</td>
+        </tr>
+        <tr>
+          <td style='text-align:left;'>offset: &#39;lt&#39;</td>
+          <td style='text-align:left;'>快捷设置左上角</td>
+        </tr>
+        <tr>
+          <td style='text-align:left;'>offset: &#39;lb&#39;</td>
+          <td style='text-align:left;'>快捷设置左下角</td>
+        </tr>
+        <tr>
+          <td style='text-align:left;'>offset: &#39;rt&#39;</td>
+          <td style='text-align:left;'>快捷设置右上角</td>
+        </tr>
+        <tr>
+          <td style='text-align:left;'>offset: &#39;rb&#39;</td>
+          <td style='text-align:left;'>快捷设置右下角</td>
+        </tr>
+      </tbody>
+    </table>
+  </figure>
+  <h3 id='icon---图标'>icon - 图标</h3>
+  <pre><code class='language-javascript' lang='javascript'>//eg1
+layer.alert(&#39;酷毙了&#39;, {icon: 1});
+//eg2
+layer.msg(&#39;不开心。。&#39;, {icon: 5});
+//eg3
+layer.load(1); //风格1的加载
+</code></pre>
+  <h3 id='btn---按钮'>btn - 按钮</h3>
+  <pre><code class='language-javascript' lang='javascript'>//eg2
+layer.open({
+  content: &#39;test&#39;
+  ,btn: [&#39;按钮一&#39;, &#39;按钮二&#39;, &#39;按钮三&#39;]
+  ,yes: function(index, layero){
+    //按钮【按钮一】的回调
+  }
+  ,btn2: function(index, layero){
+    //按钮【按钮二】的回调
+    //return false 开启该代码可禁止点击该按钮关闭
+  }
+  ,btn3: function(index, layero){
+    //按钮【按钮三】的回调
+    //return false 开启该代码可禁止点击该按钮关闭
+  }
+  ,cancel: function(){ 
+    //右上角关闭回调
+    //return false 开启该代码可禁止点击该按钮关闭
+  }
+});
+</code></pre>
+  <p>响应函数不指定时顺序执行，也可以通过btnx:function(index, layero)来指定第x个按钮的回调函数</p>
+</body>
+
+</html>

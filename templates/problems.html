@@ -1,0 +1,961 @@
+<!doctype html>
+<html>
+
+<head>
+	<meta charset='UTF-8'>
+	<meta name='viewport' content='width=device-width initial-scale=1'>
+	<link rel="stylesheet" href="layui/css/layui.css">
+	<script src="layui/layui.js"></script>
+	<title>Linux学习报告</title>
+</head>
+
+<body>
+	<!--导航条-->
+	<div class="margin-left:20px">
+		<ul class="layui-nav" lay-filter="">
+			<li class="layui-nav-item"><a style="font-size: large;font-style: italic;">Pskyfly's Blog<a></li>
+			<li class="layui-nav-item layui-col-md-offset8"><a href="/homepage">首页</a></li>
+			<li class="layui-nav-item"><a href="/problems">刷题记录</a></li>
+			<li class="layui-nav-item">
+				<a href="javascript:;">学习笔记</a>
+				<dl class="layui-nav-child">
+					<!-- 二级菜单 -->
+					<dd><a href="/linux">Linux基础</a></dd>
+					<dd><a href="/layui">LayUI框架</a></dd>
+					<dd><a href="/acm">ACM-ICPC训练</a></dd>
+				</dl>
+			</li>
+		</ul>
+	</div>
+	<!--导航条-->
+	<h1 id='training-contests'>Training Contests</h1>
+	<h1 id='第一场综合赛补题报告------李天航'>第一场综合赛补题报告——李天航</h1>
+	<h2 id='前言'>前言</h2>
+	<p>蒟蒻的我在第一题上卡了两个小时，然后用了两个半小时切了六题，要是顺序换一下估计排名能上升不少呢。以后还要多注意呀。</p>
+	<h1 id='p1106-删数问题'>P1106 删数问题</h1>
+	<p>一般贪心题交了十几遍不知道卡在哪了一般就是贪心策略出现了问题，这时候一定要从多方面进行考虑，不要在一个策略上死磕。这题表面上是删数，实际上删除最大的数字是错误的，比如1324，你删除4得到的是132，而正确答案是删除3得到124，所以这个题正确的做法是找出剩下的数字，在序列最后保留最低限度的数字，然后在前面找最小的数字，下一次就以上一位数字为起点，找下一位数字然后注意一下边界条件即可，是不是很简单？但是蒟蒻的我就是写不出来。
+	</p>
+	<pre><code class='language-c++' lang='c++'>#include&lt;cstdio&gt;
+#include&lt;iostream&gt;
+#include&lt;math.h&gt;
+#include&lt;algorithm&gt;
+#include&lt;cstring&gt;
+#include&lt;unordered_map&gt;
+#include&lt;string&gt;
+#include&lt;queue&gt;
+#include&lt;map&gt;
+#include&lt;ctime&gt;
+#include&lt;limits.h&gt;
+#include &lt;stack&gt;
+#include&lt;set&gt;
+#include&lt;iomanip&gt;
+#define ll long long
+#define um unordered_map
+#pragma warning(disable : 4996)
+using namespace std;
+#define rep(l,a,b) for(ll l=a;l&lt;=b;l++)
+#define repp(l,a,b) for(ll l=a;l&gt;=b;l--)
+#define mem(x) memset(x,0,sizeof(x))
+#define fr fast_IO::read()
+#define INF 0x3f3f3f3f
+namespace fast_IO {
+	ll read() {
+		ll num = 0;
+		char c;
+		bool tag = false;
+		while ((c = getchar()) != &#39;-&#39; &amp;&amp; c != &#39;+&#39; &amp;&amp; (c &lt; &#39;0&#39; || c &gt; &#39;9&#39;) &amp;&amp; ~c);
+		if (!~c)return EOF;
+		if (c == &#39;-&#39;)tag = true;
+		else if (c == &#39;+&#39;)tag = false;
+		else num = c ^ 48;
+		while ((c = getchar()) &gt;= &#39;0&#39; &amp;&amp; c &lt;= &#39;9&#39;)
+			num = (num &lt;&lt; 1) + (num &lt;&lt; 3) + (c ^ 48);
+		if (tag)return -num;
+		return num;
+	}
+}
+const ll mod = 50001;
+#define N 1000000
+int n, m;
+string ss;
+struct pp
+{
+	ll num, id;
+	bool operator &lt;(const pp a)const
+	{
+		if (num == a.num)
+			return id &gt; a.id;
+		else
+			return num &lt; a.num;
+	}
+}p[100000];
+int k;
+char ans[500];
+signed main()
+{
+	//freopen(&quot;in.txt&quot;, &quot;r&quot;, stdin);
+	cin &gt;&gt; ss &gt;&gt; k;
+	
+	int len = ss.length();
+	if (k &gt;= len)
+	{
+		cout &lt;&lt; &quot;0&quot;;
+		return 0;
+	}
+	int m = len - k;
+	int idx = 0;
+	rep(i, 1, m)
+	{
+		ll maxi = idx;
+		for (; idx &lt; len - m+i; idx++)
+		{
+			if (ss[idx] &lt; ss[maxi])
+				maxi = idx;
+		}
+		idx = maxi + 1;
+		ans[i] = ss[maxi];
+	}
+	int id = 1;
+	while (id &lt;= m &amp;&amp; ans[id] == &#39;0&#39;) id++;
+	rep(i, id, m)
+	{
+		cout &lt;&lt; ans[i];
+	}
+	if (id == m + 1) cout &lt;&lt; 0;
+}
+</code></pre>
+	<h1 id='p2652-同花顺'>P2652 同花顺</h1>
+	<p>这其实是一道很简单的贪心的题（比赛的时候被第一题卡太久qwq），同花顺嘛，花色相同，点数要递增（注意，不能相同）。所以我们先双关键字排序，然后去重，双指针找以每张牌为起点的最长区间，最后统计答案即可。</p>
+	<pre><code class='language-c++' lang='c++'>#include&lt;cstdio&gt;
+#include&lt;iostream&gt;
+#include&lt;math.h&gt;
+#include&lt;algorithm&gt;
+#include&lt;cstring&gt;
+#include&lt;unordered_map&gt;
+#include&lt;string&gt;
+#include&lt;queue&gt;
+#include&lt;map&gt;
+#include&lt;ctime&gt;
+#include&lt;limits.h&gt;
+#include &lt;stack&gt;
+#include&lt;set&gt;
+#include&lt;iomanip&gt;
+#define ll long long
+#define int long long
+#define um unordered_map
+#pragma warning(disable : 4996)
+using namespace std;
+#define rep(l,a,b) for(ll l=a;l&lt;=b;l++)
+#define repp(l,a,b) for(ll l=a;l&gt;=b;l--)
+#define mem(x) memset(x,0,sizeof(x))
+#define fr fast_IO::read()
+#define INF 0x3f3f3f3f
+namespace fast_IO {
+	ll read() {
+		ll num = 0;
+		char c;
+		bool tag = false;
+		while ((c = getchar()) != &#39;-&#39; &amp;&amp; c != &#39;+&#39; &amp;&amp; (c &lt; &#39;0&#39; || c &gt; &#39;9&#39;) &amp;&amp; ~c);
+		if (!~c)return EOF;
+		if (c == &#39;-&#39;)tag = true;
+		else if (c == &#39;+&#39;)tag = false;
+		else num = c ^ 48;
+		while ((c = getchar()) &gt;= &#39;0&#39; &amp;&amp; c &lt;= &#39;9&#39;)
+			num = (num &lt;&lt; 1) + (num &lt;&lt; 3) + (c ^ 48);
+		if (tag)return -num;
+		return num;
+	}
+}
+const ll mod = 50001;
+#define N 1000005
+int n;
+struct node
+{
+	int a, b;
+	bool operator &lt;(const node&amp; p)const
+	{
+		if (a == p.a) return b &lt; p.b;
+		else return a &lt; p.a;
+	}
+}pt[N], pp[N];
+int ans[N];
+
+signed main()
+{
+	n = fr;
+	rep(i, 1, n)
+		pp[i].a = fr, pp[i].b = fr;
+	sort(pp + 1, pp + 1 + n);
+	int cnt = 0;
+	rep(i, 1, n)
+	{
+		if (pp[i - 1].a == pp[i].a &amp;&amp; pp[i - 1].b == pp[i].b) continue;
+		pt[++cnt] = pp[i];
+	}
+	int nn = n;
+	n = cnt;
+	int j = 1;
+	rep(i, 1, n)
+	{
+		while (j &lt;= n &amp;&amp; pt[j].a == pt[i].a &amp;&amp; pt[j].b - pt[i].b + 1 &lt;= n)
+			j++;
+		ans[i] = j - i;
+	}
+	ll lans = 0;
+	rep(i, 1, n)
+	{
+		lans = max(lans, ans[i]);
+	}
+	cout &lt;&lt; nn - lans &lt;&lt; endl;
+}
+</code></pre>
+	<h1 id='第二场综合赛补题报告------李天航'>第二场综合赛补题报告——李天航</h1>
+	<h2 id='p1281-书的复制'>P1281 书的复制</h2>
+	<p>这个是个本蒟蒻不会写的签到题。这题直接二分找到最大值的答案，然后从后往前贪心即可。（因为要前面的任务尽可能少嘛）</p>
+	<pre><code class='language-c++' lang='c++'>#include&lt;cstdio&gt;
+#include&lt;iostream&gt;
+#include&lt;math.h&gt;
+#include&lt;algorithm&gt;
+#include&lt;cstring&gt;
+//#include&lt;unordered_map&gt;
+#include&lt;string&gt;
+#include&lt;queue&gt;
+#include&lt;map&gt;
+#include&lt;ctime&gt;
+#include&lt;limits.h&gt;
+#include &lt;stack&gt;
+#include&lt;set&gt;
+#include&lt;iomanip&gt;
+#define ll long long
+#pragma warning(disable : 4996)
+using namespace std;
+#define rep(l,a,b) for(ll l=a;l&lt;=b;l++)
+#define repp(l,a,b) for(ll l=a;l&gt;=b;l--)
+#define mem(x) memset(x,0,sizeof(x))
+#define fr fast_IO::read()
+#define INF 0X3f3f3f3f
+namespace fast_IO {
+	ll read() {
+		ll num = 0;
+		char c;
+		bool tag = false;
+		while ((c = getchar()) != &#39;-&#39; &amp;&amp; c != &#39;+&#39; &amp;&amp; (c &lt; &#39;0&#39; || c &gt; &#39;9&#39;) &amp;&amp; ~c);
+		if (!~c)return EOF;
+		if (c == &#39;-&#39;)tag = true;
+		else if (c == &#39;+&#39;)tag = false;
+		else num = c ^ 48;
+		while ((c = getchar()) &gt;= &#39;0&#39; &amp;&amp; c &lt;= &#39;9&#39;)
+			num = (num &lt;&lt; 1) + (num &lt;&lt; 3) + (c ^ 48);
+		if (tag)return -num;
+		return num;
+	}
+}
+const ll mod = 100000000;
+#define N 1000
+ll n, m, k;
+ll a[N], sum[N];
+ll num[N];//区间的起点
+
+bool check(int x)
+{
+	int idx = n;
+	num[k+1] = n+1;
+	repp(i, k, 2)
+	{
+		while (idx &gt;= 1 &amp;&amp; sum[num[i+1]-1] - sum[idx-1] &lt;= x) idx--;
+		if (idx &gt;= 1)
+		{
+			num[i] = idx + 1;
+		}
+		else
+			return true;
+	}
+	if (sum[num[2] - 1] - sum[0] &lt;= x) return true;
+	else return false;
+}
+int main()
+{
+	//freopen(&quot;in.txt&quot;, &quot;r&quot;, stdin);
+	cin &gt;&gt; n &gt;&gt; k;
+	rep(i, 1, n)
+		a[i] = fr, sum[i] = sum[i - 1] + a[i];
+	int l = 0, r = sum[n], mid;
+	while (l &lt; r)
+	{
+		mid = l + r &gt;&gt; 1;
+		if (check(mid)) r = mid;
+		else l = mid + 1;
+	}
+	check(l);
+	num[1] = 1;
+	rep(i, 1, k)
+	{
+		cout &lt;&lt; num[i] &lt;&lt; &quot; &quot; &lt;&lt; num[i + 1] - 1 &lt;&lt; &quot;\n&quot;;
+	}
+	
+}
+</code></pre>
+	<h1 id='p1080-noip2012-提高组-国王游戏'>P1080 [NOIP2012 提高组] 国王游戏</h1>
+	<p>这个题要用到数学上的奇技淫巧，可以证明想要相邻两个数的最大值最小，只需要让a*b小的放在前面即可。让后就是这题可能会爆ll，所以要上高精度。</p>
+	<pre><code class='language-c++' lang='c++'>#include&lt;cstdio&gt;
+#include&lt;iostream&gt;
+#include&lt;math.h&gt;
+#include&lt;algorithm&gt;
+#include&lt;cstring&gt;
+//#include&lt;unordered_map&gt;
+#include&lt;string&gt;
+#include&lt;queue&gt;
+#include&lt;map&gt;
+#include&lt;ctime&gt;
+#include&lt;limits.h&gt;
+#include &lt;stack&gt;
+#include&lt;set&gt;
+#include&lt;iomanip&gt;
+#define ll long long
+#pragma warning(disable : 4996)
+using namespace std;
+#define rep(l,a,b) for(ll l=a;l&lt;=b;l++)
+#define repp(l,a,b) for(ll l=a;l&gt;=b;l--)
+#define mem(x) memset(x,0,sizeof(x))
+#define fr fast_IO::read()
+#define INF 0X3f3f3f3f
+namespace fast_IO {
+	ll read() {
+		ll num = 0;
+		char c;
+		bool tag = false;
+		while ((c = getchar()) != &#39;-&#39; &amp;&amp; c != &#39;+&#39; &amp;&amp; (c &lt; &#39;0&#39; || c &gt; &#39;9&#39;) &amp;&amp; ~c);
+		if (!~c)return EOF;
+		if (c == &#39;-&#39;)tag = true;
+		else if (c == &#39;+&#39;)tag = false;
+		else num = c ^ 48;
+		while ((c = getchar()) &gt;= &#39;0&#39; &amp;&amp; c &lt;= &#39;9&#39;)
+			num = (num &lt;&lt; 1) + (num &lt;&lt; 3) + (c ^ 48);
+		if (tag)return -num;
+		return num;
+	}
+}
+const ll mod = 100000000;
+#define N 1000
+ll n, m, k;
+struct pp
+{
+	ll a, b;
+}p[1500];
+bool cmp(pp a, pp b)
+{
+	return a.a * a.b &lt; b.a* b.b;
+}
+#define vs vector&lt;short&gt;
+vs a, b, c, d;
+void print(vs a)//打印高精度 
+{
+
+	for (ll i = a.size() - 1; i &gt;= 0; i--)
+		cout &lt;&lt; a[i];
+	cout &lt;&lt; endl;
+}
+vs tovs(ll a)//转换成高精度 
+{
+	vs c;
+	while (a != 0)
+	{
+		c.push_back(a % 10);
+		a = a / 10;
+	}
+	return c;
+}
+vs mul(vs a, ll b)//高精度a*b 
+{
+	vs c;
+	ll t = 0;
+	for (ll i = 0; i &lt; a.size() || t; i++)
+	{
+		if (i &lt; a.size())
+			t += a[i] * b;
+		c.push_back(t % 10);
+		t = t / 10;
+	}
+
+	while (c.size() &gt; 1 &amp;&amp; c.back() == 0) c.pop_back();
+	return c;
+}
+
+vs div(vs a, ll b, ll&amp; r)//a/b.....r 
+{
+	vs c;
+	r = 0;
+	r = 0;
+	for (ll i = a.size() - 1; i &gt;= 0; i--)
+	{
+		r = r * 10 + a[i];
+		c.push_back(r / b);
+		r %= b;
+	}
+	reverse(c.begin(), c.end());
+	while (c.size() &gt; 1 &amp;&amp; c.back() == 0) c.pop_back();
+	return c;
+}
+int compare(vs a, vs b)//1为a&gt;b,-1为a&lt;b,0为a=b 
+{
+	if (a.size() &gt; b.size())
+		return 1;
+	else if (a.size() &lt; b.size())
+		return -1;
+	else
+	{
+		for (ll i = a.size() - 1; i &gt;= 0; i--)
+		{
+			if (a[i] &gt; b[i])
+				return 1;
+			else if (a[i] &lt; b[i])
+				return -1;
+		}
+		return 0;
+	}
+}
+int main()
+{
+	//freopen(&quot;in.txt&quot;, &quot;r&quot;, stdin);
+	cin &gt;&gt; n;
+	rep(i, 0, n)
+	{
+		p[i].a = fr;
+		p[i].b = fr;
+	}
+	sort(p + 1, p + n+1, cmp);
+	vs ans, mu;
+	ans = tovs(0);
+	mu = tovs(p[0].a);
+	rep(i, 1, n)
+	{
+		ll nn;
+		vs mm=div(mu, p[i].b, nn);
+		if (compare(mm, ans) == true)
+			ans = mm;
+		mu = mul(mu, p[i].a);
+	}
+	print(ans);
+}
+</code></pre>
+	<h1 id='p5159-wd与矩阵'>P5159 WD与矩阵</h1>
+	<p>这其实是一道很简单的题，只是需要用到数学上的奇技淫巧（），比赛的时候我没开这道题，过的人也不多，以后被卡住了还是要多开题啊。它说的是每一行没一列自己的异或值，而不是相邻行的异或值（估计只有本蒟蒻才会这么理解吧……逃），而异或的结果一定是0或1，所以最后一行/列，只要根据前n-1行m-1列进行调整就能使得异或值为0，所以求得（n-1）*（m-1）的矩阵有多少种情况用快速幂即可。
+	</p>
+	<pre><code class='language-c++' lang='c++'>#include&lt;cstdio&gt;
+#include&lt;iostream&gt;
+#include&lt;math.h&gt;
+#include&lt;algorithm&gt;
+#include&lt;cstring&gt;
+//#include&lt;unordered_map&gt;
+#include&lt;string&gt;
+#include&lt;queue&gt;
+#include&lt;map&gt;
+#include&lt;ctime&gt;
+#include&lt;limits.h&gt;
+#include &lt;stack&gt;
+#include&lt;set&gt;
+#include&lt;iomanip&gt;
+#define ll long long
+#pragma warning(disable : 4996)
+using namespace std;
+#define rep(l,a,b) for(ll l=a;l&lt;=b;l++)
+#define repp(l,a,b) for(ll l=a;l&gt;=b;l--)
+#define mem(x) memset(x,0,sizeof(x))
+#define fr fast_IO::read()
+#define INF 0X3f3f3f3f
+namespace fast_IO {
+	ll read() {
+		ll num = 0;
+		char c;
+		bool tag = false;
+		while ((c = getchar()) != &#39;-&#39; &amp;&amp; c != &#39;+&#39; &amp;&amp; (c &lt; &#39;0&#39; || c &gt; &#39;9&#39;) &amp;&amp; ~c);
+		if (!~c)return EOF;
+		if (c == &#39;-&#39;)tag = true;
+		else if (c == &#39;+&#39;)tag = false;
+		else num = c ^ 48;
+		while ((c = getchar()) &gt;= &#39;0&#39; &amp;&amp; c &lt;= &#39;9&#39;)
+			num = (num &lt;&lt; 1) + (num &lt;&lt; 3) + (c ^ 48);
+		if (tag)return -num;
+		return num;
+	}
+}
+const ll mod = 998244353;
+#define N 1000
+ll n, m, k;
+ll powerMod(ll a, ll b, ll c) {//快速幂：a = 2，b 为 次方数，c为 mod 
+	ll ans = 1;
+	a = a % c;
+	while (b &gt; 0) {
+		if (b &amp; 1)
+			ans = (ans * a) % c;
+		b = b / 2;
+		a = (a * a) % c;
+	}
+	return ans%c;
+}
+int main()
+{
+	//freopen(&quot;in.txt&quot;, &quot;r&quot;, stdin);
+	int t;
+	cin &gt;&gt; t;
+	while (t--)
+	{
+		m = fr, n = fr;
+		printf(&quot;%lld\n&quot;, powerMod(2, (m - 1) * (n - 1), mod));
+	}
+
+}
+</code></pre>
+	<h1 id='p1108-低价购买'>P1108 低价购买</h1>
+	<p>这题是其实就是最长递减子序列的问题，只是需要询问方案数且要减去出现一模一样的答案。我们先按照正常的步骤求解最长递减子序列的长度，同时记录以每个结点为终点的子序列的最大长度和对应的方案数。</p>
+	<pre><code class='language-c++' lang='c++'>rep(j, 1, i - 1)
+		{
+			if (f[i] == f[j] &amp;&amp; a[i] == a[j])
+				t[j] = 0;
+			else if (f[i] == f[j]+1 &amp;&amp; a[i] &lt; a[j])
+				t[i] += t[j];
+		}
+</code></pre>
+	<p>如果a[i]==a[j]，那么j所拥有的方案同样适用于i，即f[i]&gt;=f[j]，而如果f[i]==f[j]，那么说明在j+1~i-1中没有合适的元素能做为答案，所以以i，j结尾的最长递减子序列完全相同，只需要保留后面的答案，即t[j]=0。
+	</p>
+	<p>如果f[i] == f[j]+1 &amp;&amp; a[i] &lt;
+		a[j]，说明以j结尾的最长递减子序列可以由以i结尾的序列继承而来，所以将所有可以继承的方案数加起来就是i的方案数。所以t[i]的初始值为0而不能赋值为1。所以如果没有可以继承的方案，即t[i]==0,让他自己为一个方案，即t[i]=1。因为有这层判断，去重的时候要保留t[i],舍弃t[j]。
+	</p>
+	<p>下面放上代码：</p>
+	<pre><code class='language-c++' lang='c++'>#include&lt;cstdio&gt;
+#include&lt;iostream&gt;
+#include&lt;math.h&gt;
+#include&lt;algorithm&gt;
+#include&lt;cstring&gt;
+//#include&lt;unordered_map&gt;
+#include&lt;string&gt;
+#include&lt;queue&gt;
+#include&lt;map&gt;
+#include&lt;ctime&gt;
+#include&lt;limits.h&gt;
+#include &lt;stack&gt;
+#include&lt;set&gt;
+#include&lt;iomanip&gt;
+#define ll long long
+#pragma warning(disable : 4996)
+using namespace std;
+#define rep(l,a,b) for(ll l=a;l&lt;=b;l++)
+#define repp(l,a,b) for(ll l=a;l&gt;=b;l--)
+#define mem(x) memset(x,0,sizeof(x))
+#define fr fast_IO::read()
+#define INF 0X3f3f3f3f
+namespace fast_IO {
+	ll read() {
+		ll num = 0;
+		char c;
+		bool tag = false;
+		while ((c = getchar()) != &#39;-&#39; &amp;&amp; c != &#39;+&#39; &amp;&amp; (c &lt; &#39;0&#39; || c &gt; &#39;9&#39;) &amp;&amp; ~c);
+		if (!~c)return EOF;
+		if (c == &#39;-&#39;)tag = true;
+		else if (c == &#39;+&#39;)tag = false;
+		else num = c ^ 48;
+		while ((c = getchar()) &gt;= &#39;0&#39; &amp;&amp; c &lt;= &#39;9&#39;)
+			num = (num &lt;&lt; 1) + (num &lt;&lt; 3) + (c ^ 48);
+		if (tag)return -num;
+		return num;
+	}
+}
+const ll mod = 998244353;
+#define N 10000
+ll n, m, k;
+ll a[N],f[N],t[N];
+int main()
+{
+	//freopen(&quot;in.txt&quot;, &quot;r&quot;, stdin);
+	cin &gt;&gt; n;
+	rep(i, 1, n)
+		a[i] = fr;
+	rep(i, 1, n)
+		f[i] = 1,t[i]=1;
+	ll mmax = 0;
+	rep(i, 1, n)
+	{
+		rep(j, 1, i - 1)
+			if (a[j] &gt; a[i])
+				f[i] = max(f[i], f[j] + 1);
+		mmax = max(mmax, f[i]);
+		rep(j, 1, i - 1)
+		{
+			if (f[i] == f[j] &amp;&amp; a[i] == a[j])
+				t[j] = 0;
+			else if (f[i] == f[j]+1 &amp;&amp; a[i] &lt; a[j])
+				t[i] += t[j];
+		}
+		if (t[i] == 0)//如果没有能继承的方案，即a[i]为前i个中最大的值，则t[i]=1即他本身
+			t[i] = 1;
+	}
+	ll ans = 0;
+	rep(i, 1, n)
+		if (f[i] == mmax)
+			ans+=t[i];
+	cout &lt;&lt; mmax &lt;&lt; &quot; &quot; &lt;&lt; ans &lt;&lt; endl;
+}
+</code></pre>
+	<h1 id='第三场综合赛补题报告------李天航'>第三场综合赛补题报告——李天航</h1>
+	<h2 id='p4396-ahoi2013作业'>P4396 [AHOI2013]作业</h2>
+	<p>这个题很巧妙地将莫队和分块结合了起来，仔细观察我们可以发现，这个值域和数据量的范围都是1e5，所以我们可以考虑分块。求解答案需要用到值域分块，因而需要利用莫队在区间上维护出求解答案所需要的数据，即在给定区间[l,r]中，维护每个数字的数量，每个值域块中数字的数量，每个值域块中数字的种类。维护出这些信息后，就可以分块进行求解答案。这个题也开辟了新的思路，莫队不一定要直接得到答案，最后的答案可以通过某种算法得到，而莫队用来维护区间中需要的数据。
+	</p>
+	<pre><code class='language-c++' lang='c++'>#include&lt;cstdio&gt;
+#include&lt;iostream&gt;
+#include&lt;math.h&gt;
+#include&lt;algorithm&gt;
+#include&lt;cstring&gt;
+#include&lt;unordered_map&gt;
+#include&lt;string&gt;
+#include&lt;queue&gt;
+#include&lt;map&gt;
+#include&lt;ctime&gt;
+#include&lt;limits.h&gt;
+#include &lt;stack&gt;
+#include&lt;set&gt;
+#include&lt;iomanip&gt;
+#define ll long long
+#define int long long
+#define um unordered_map
+#pragma warning(disable : 4996)
+using namespace std;
+#define rep(l,a,b) for(ll l=a;l&lt;=b;l++)
+#define repp(l,a,b) for(ll l=a;l&gt;=b;l--)
+#define mem(x) memset(x,0,sizeof(x))
+#define fr fast_IO::read()
+#define INF 0x3f3f3f3f
+namespace fast_IO {
+	ll read() {
+		ll num = 0;
+		char c;
+		bool tag = false;
+		while ((c = getchar()) != &#39;-&#39; &amp;&amp; c != &#39;+&#39; &amp;&amp; (c &lt; &#39;0&#39; || c &gt; &#39;9&#39;) &amp;&amp; ~c);
+		if (!~c)return EOF;
+		if (c == &#39;-&#39;)tag = true;
+		else if (c == &#39;+&#39;)tag = false;
+		else num = c ^ 48;
+		while ((c = getchar()) &gt;= &#39;0&#39; &amp;&amp; c &lt;= &#39;9&#39;)
+			num = (num &lt;&lt; 1) + (num &lt;&lt; 3) + (c ^ 48);
+		if (tag)return -num;
+		return num;
+	}
+}
+const ll mod = 50001;
+#define N 1000000
+int n, m, k, block, belong[N];
+int cnt[N], bcnt[N], bres[N];//数的数量，块中数的数量，块中数的种类数
+int l[N], r[N];
+struct Q
+{
+	int l, r, a, b, id;
+	bool operator&lt;(const Q&amp; b)
+	{
+		if (belong[l] != belong[b.l]) return l &lt; b.l;
+		else return r &lt; b.r;
+	}
+}query[N];
+struct an
+{
+	int a, b;
+}ans[N];
+int L, R, ret;
+void add(int x)
+{
+	cnt[x]++;//统计x出现的次数
+	bcnt[belong[x]]++;//统计x对应的块中有多少个数字
+	if (cnt[x] == 1) bres[belong[x]]++;//统计x对应的块中有多少种数字
+}
+void del(int x)
+{
+	cnt[x]--;
+	bcnt[belong[x]]--;
+	if (cnt[x] == 0) bres[belong[x]]--;
+}
+void getans(int a, int b, int id)//求解答案
+{
+	int ba = belong[a], bb = belong[b];
+	if (ba == bb)//如果在同一个块中，暴力求解
+	{
+		rep(i, a, b)
+			if (cnt[i] &gt; 0)
+				ans[id].a += cnt[i], ans[id].b++;
+	}
+	else//不在同一个值域块中
+	{
+		rep(i, a, r[ba])//求解做端点在的块
+			if (cnt[i] &gt; 0)
+				ans[id].a += cnt[i], ans[id].b++;
+		rep(i, l[bb], b)//求解右端点所在的块
+			if (cnt[i] &gt; 0)
+				ans[id].a += cnt[i], ans[id].b++;
+		rep(i, ba + 1, bb - 1)//中间没有任何修改，直接统计
+		{
+			ans[id].a += bcnt[i];
+			ans[id].b += bres[i];
+		}
+	}
+}
+int a[N];
+signed main()
+{
+	//freopen(&quot;in.txt&quot;, &quot;r&quot;, stdin);
+	n = fr, m = fr;
+	L = 1, R = 0;
+	rep(i, 1, n)
+		a[i] = fr;
+	rep(i, 1, m)
+	{
+		int l = fr, r = fr, a = fr, b = fr;
+		query[i] = { l,r,a,b,i };
+	}
+	block = sqrt(n);
+	rep(i, 1, n) belong[i] = (i - 1) / block + 1;
+	rep(i, 1, n / block + 1) l[i] = (i - 1) * block + 1, r[i] = i * block;
+	sort(query + 1, query + m + 1);
+	rep(i, 1, m)
+	{
+		int l = query[i].l, r = query[i].r, id = query[i].id, aa = query[i].a, ab = query[i].b;
+		while (R &lt; r) add(a[++R]);
+		while (L &gt; l)  add(a[--L]);
+		while (R &gt; r) del(a[R--]);
+		while (L &lt; l) del(a[L++]);
+		getans(aa, ab, id);
+	}
+	rep(i, 1, m)
+	{
+		printf(&quot;%lld %lld\n&quot;, ans[i].a, ans[i].b);
+	}
+}
+</code></pre>
+	<h2 id='p1954-noi2010-航空管制'>P1954 [NOI2010] 航空管制</h2>
+	<p>这题如果只有航班间的相对关系，那就是一道普通的拓扑排序的题目。而这个题目还限制了每个航班的最晚次序。所以我们在拓扑排序的基础上考虑贪心，优先让可以靠后出场的航班尽可能靠后，考虑用优先队列来处理，这样第一问就可以完成。考虑第二问，求解每个航班能够最早出现的次序。我们可以建立反图，从后往前考虑。对每个结点x都进行一次拓扑排序，当取出的结点是x时，我们先放在一旁，优先队列中取出的是所有可以取出的点中，最能靠后的结点。如果最能靠后的结点都无法在当前次序res出队，则说明只有x能满足情况，此时res就是x最能靠前的次序（如果x都满足不了，说明这个图不存在拓扑排序，而这种情况题目中说不存在）。而建立反图就是为了能够从后往前考虑，从前往后可以求解最靠后的点，而从后往前可以求解最靠前的点。
+	</p>
+	<pre><code class='language-c++' lang='c++'>#include&lt;cstdio&gt;
+#include&lt;iostream&gt;
+#include&lt;math.h&gt;
+#include&lt;algorithm&gt;
+#include&lt;cstring&gt;
+#include&lt;unordered_map&gt;
+#include&lt;string&gt;
+#include&lt;queue&gt;
+#include&lt;map&gt;
+#include&lt;ctime&gt;
+#include&lt;limits.h&gt;
+#include &lt;stack&gt;
+#include&lt;set&gt;
+#include&lt;iomanip&gt;
+#define ll long long
+#define int long long
+#define um unordered_map
+#pragma warning(disable : 4996)
+using namespace std;
+#define rep(l,a,b) for(ll l=a;l&lt;=b;l++)
+#define repp(l,a,b) for(ll l=a;l&gt;=b;l--)
+#define mem(x) memset(x,0,sizeof(x))
+#define fr fast_IO::read()
+#define INF 0x3f3f3f3f
+namespace fast_IO {
+	ll read() {
+		ll num = 0;
+		char c;
+		bool tag = false;
+		while ((c = getchar()) != &#39;-&#39; &amp;&amp; c != &#39;+&#39; &amp;&amp; (c &lt; &#39;0&#39; || c &gt; &#39;9&#39;) &amp;&amp; ~c);
+		if (!~c)return EOF;
+		if (c == &#39;-&#39;)tag = true;
+		else if (c == &#39;+&#39;)tag = false;
+		else num = c ^ 48;
+		while ((c = getchar()) &gt;= &#39;0&#39; &amp;&amp; c &lt;= &#39;9&#39;)
+			num = (num &lt;&lt; 1) + (num &lt;&lt; 3) + (c ^ 48);
+		if (tag)return -num;
+		return num;
+	}
+}
+const ll mod = 50001;
+#define N 1000000
+int k[N],inv[N],invv[N];
+int m, n;
+vector&lt;int&gt; vt[N];//u必须晚于v
+struct node
+{
+	int nk, id;
+	bool operator &lt;(const node a)const
+	{
+		return a.nk &lt; nk;
+	}
+};
+priority_queue&lt;node&gt; q;
+int ans[N];
+ll solve(int x)
+{
+	rep(i, 1, n)
+		inv[i] = invv[i];
+	int res = n;
+	rep(i, 1, n)
+	{
+		if (inv[i] == 0)
+		{
+			node temp = { n - k[i],i };
+			q.push(temp);
+		}
+	}
+	while (q.empty() == false)
+	{
+		node t = q.top(); q.pop();
+		if (t.id == x) continue;
+		if (res &gt; n-t.nk) return res;
+		res--;
+		for (int i = 0; i &lt; vt[t.id].size(); i++)
+		{
+			int v = vt[t.id][i];
+			inv[v]--;
+			if (inv[v] == 0)
+			{
+				node temp = { n - k[v],v };
+				q.push(temp);
+			}
+		}
+	}
+	return res;
+}
+signed main()
+{
+	//freopen(&quot;in.txt&quot;, &quot;r&quot;, stdin);
+	n = fr, m = fr;
+	rep(i, 1, n)
+		k[i] = fr;
+	rep(i, 1, m)
+	{
+		int u, v;
+		u = fr, v = fr;
+		vt[v].push_back(u);
+		inv[u]++;
+		invv[u] = inv[u];
+	}
+	rep(i, 1, n)
+	{
+		if (inv[i] == 0)
+		{
+			node temp = { n - k[i],i };
+			q.push(temp);
+		}
+	}
+	int cnt = 0;
+	while (q.empty() == false)
+	{
+		node t = q.top(); q.pop();
+		ans[++cnt] = t.id;
+		for (int i = 0; i &lt; vt[t.id].size(); i++)
+		{
+			int v = vt[t.id][i];
+			inv[v]--;
+			if (inv[v] == 0)
+			{
+				node temp = { n-k[v],v };
+				q.push(temp);
+			}
+		}
+	}
+	repp(i, n, 1)
+		printf(&quot;%lld &quot;, ans[i]);
+	printf(&quot;\n&quot;);
+	rep(i, 1, n)
+	{
+		while (q.empty() == false) q.pop();
+		printf(&quot;%lld &quot;, solve(i));
+	}
+}
+</code></pre>
+	<h1 id='p4804-ccc-2016生命中的圆'>P4804 [CCC 2016]生命中的圆</h1>
+	<p>这个题是一道倍增的好题（难题），首先需要证明一个公式，一个长度为n的字符串，当前进行了c轮，c=2^k。第i个位置第2^k轮的数f[2^k] [i]=f[2^(k-1)] [(i-c)%n]⊕f[2^(k-1)]
+		[(i+c)%n]，即上一轮的结果中左移c位和右移c异或的结果。</p>
+	<p>证明：假如一个五位数一开始为0xxx1（或者1xxx0），第三位无论是0或者1，经过第一轮变换后第2,4位都不一样，所以再经过第二轮变换可以得到第三位是1；假如一个五位数一开始为0xxx0（或者1xxx1），第三位无论是0或者1，经过第一轮变换后第2,4位都一样，所以再经过第二轮变换可以得到第三位是0。可知对于2^1次变换成立，而对于2^2次变换，可以看做进行了两次2^1次变换。所以可以推广到2^k次变换可以看做进行了两次2^(k-1)次变换的结果。所以成立
+	</p>
+	<p>于是我们考虑倍增，将t二进制分解，从低位到高位进行考虑比如7可以分解成111，我们从1的结果计算2，由2的结果计算4，于是就能得到7的结果。</p>
+	<pre><code class='language-c++' lang='c++'>#include&lt;cstdio&gt;
+#include&lt;iostream&gt;
+#include&lt;math.h&gt;
+#include&lt;algorithm&gt;
+#include&lt;cstring&gt;
+#include&lt;unordered_map&gt;
+#include&lt;string&gt;
+#include&lt;queue&gt;
+#include&lt;map&gt;
+#include&lt;ctime&gt;
+#include&lt;limits.h&gt;
+#include &lt;stack&gt;
+#include&lt;set&gt;
+#include&lt;iomanip&gt;
+#define ll long long
+#define int long long
+#define um unordered_map
+#pragma warning(disable : 4996)
+using namespace std;
+#define rep(l,a,b) for(ll l=a;l&lt;=b;l++)
+#define repp(l,a,b) for(ll l=a;l&gt;=b;l--)
+#define mem(x) memset(x,0,sizeof(x))
+#define fr fast_IO::read()
+#define INF 0x3f3f3f3f
+namespace fast_IO {
+	ll read() {
+		ll num = 0;
+		char c;
+		bool tag = false;
+		while ((c = getchar()) != &#39;-&#39; &amp;&amp; c != &#39;+&#39; &amp;&amp; (c &lt; &#39;0&#39; || c &gt; &#39;9&#39;) &amp;&amp; ~c);
+		if (!~c)return EOF;
+		if (c == &#39;-&#39;)tag = true;
+		else if (c == &#39;+&#39;)tag = false;
+		else num = c ^ 48;
+		while ((c = getchar()) &gt;= &#39;0&#39; &amp;&amp; c &lt;= &#39;9&#39;)
+			num = (num &lt;&lt; 1) + (num &lt;&lt; 3) + (c ^ 48);
+		if (tag)return -num;
+		return num;
+	}
+}
+const ll mod = 50001;
+#define N 10000005
+int n, f[2][N],t;//滚动数组，每次计算的结果由上一次的结果得来
+string s;
+signed main()
+{
+	cin &gt;&gt; n &gt;&gt; t;
+	cin &gt;&gt; s;
+	int p = 0;
+	rep(i, 0, n-1) f[0][i] = s[i] - &#39;0&#39;;
+	rep(i, 0, 60)//对t进行二进制分解
+	{
+		if ((1ll &lt;&lt; i) &amp; t)//如果第i位是1
+		{
+			int pr = (1ll &lt;&lt; i) % n;//向右偏移量，别忘了是个环
+			int pl = (n - pr) % n;//向左偏移量
+			rep(j, 0, n)//j代表当前处理的数位
+			{
+				f[1 ^ p][j] = f[p][pr] ^ f[p][pl];//一开始是0
+				if (++pl &gt;= n) pl -= n;//j会往右移动一格，pr，pl也要一起移动
+				if (++pr &gt;= n) pr -= n;
+
+			}
+			p = p ^ 1;//滚动
+		}
+	}
+	rep(i, 0, n - 1)
+		cout &lt;&lt; f[p][i];
+	cout &lt;&lt; endl;
+}
+</code></pre>
+	<p>&nbsp;</p>
+
+	<script>
+		layui.use('element', function () {
+			var element = layui.element;
+		});
+		layui.use('layer', function () {
+			var layer = layui.layer;
+			layer.msg("hi");
+		})
+		layui.use('code', function () { //加载code模块
+			layui.code(); //引用code方法
+		});
+	</script>
+</body>
+
+</html>
