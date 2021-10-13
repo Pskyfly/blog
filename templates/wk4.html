@@ -4,297 +4,699 @@
 <head>
 	<meta charset='UTF-8'>
 	<meta name='viewport' content='width=device-width initial-scale=1'>
-	<title>第四周学习报告</title>
+
+	<link href='https://fonts.loli.net/css?family=Open+Sans:400italic,700italic,700,400&subset=latin,latin-ext'
+		rel='stylesheet' type='text/css' />
 	<link rel="stylesheet" href="layui/css/layui.css">
 	<script src="layui/layui.js"></script>
+
+	<title>第四周学习报告——李天航</title>
 </head>
 
 <body>
 	<!--导航条-->
 	<div class="margin-left:20px">
 		<ul class="layui-nav" lay-filter="">
-		  <li class="layui-nav-item"><a style="font-size: large;font-style: italic;">Pskyfly's Blog<a></li>
-		  <li class="layui-nav-item layui-col-md-offset8"><a href="/homepage">首页</a></li>
-		  <li class="layui-nav-item"><a href="/problems">刷题记录</a></li>
-		  <li class="layui-nav-item">
-			<a href="javascript:;">学习笔记</a>
-			<dl class="layui-nav-child">
-			  <!-- 二级菜单 -->
-			  <dd><a href="/linux">Linux基础</a></dd>
-			  <dd><a href="/layui">LayUI框架</a></dd>
-			  <dd><a href="/acm">ACM-ICPC训练</a></dd>
-			</dl>
-		  </li>
+			<li class="layui-nav-item"><a style="font-size: large;font-style: italic;">Pskyfly's Blog<a></li>
+			<li class="layui-nav-item layui-col-md-offset8"><a href="/homepage">首页</a></li>
+			<li class="layui-nav-item"><a href="/problems">刷题记录</a></li>
+			<li class="layui-nav-item">
+				<a href="javascript:;">学习笔记</a>
+				<dl class="layui-nav-child">
+					<!-- 二级菜单 -->
+					<dd><a href="/linux">Linux基础</a></dd>
+					<dd><a href="/layui">LayUI框架</a></dd>
+					<dd><a href="/acm">ACM-ICPC训练</a></dd>
+				</dl>
+			</li>
 		</ul>
-	  </div>
-	  <!--导航条-->
-	<h1 id='第四周学习报告------李天航'>第四周学习报告——李天航</h1>
-	<h2 id='并查集和最小生成树'>并查集和最小生成树</h2>
-	<p>并查集用于解决不同集合之间的问题，而最小生成树用于求解不同集合连接起来的最短路径。如果有多个不同类比的集合则需要用到扩域并查集和权值并查集等。</p>
-	<p>最小生成树有两种算法，prim算法和卡鲁斯卡尔算法。</p>
-	<p>prim算法，prim算法需要用到邻接矩阵，时间和空间花费都比较大，因而Kruskal算法用得较多。</p>
-	<pre><code class='language-c++' lang='c++'>#include&lt;cstdio&gt;
-#include&lt;iostream&gt;
-#include&lt;math.h&gt;
-#include&lt;algorithm&gt;
-#include&lt;cstring&gt;
-//#include&lt;unordered_map&gt;
-#include&lt;string&gt;
-#include&lt;queue&gt;
-#include&lt;map&gt;
-#include&lt;ctime&gt;
-#include&lt;limits.h&gt;
-#include &lt;stack&gt;
-#include&lt;set&gt;
-#include&lt;iomanip&gt;
-#define ll long long
-#pragma warning(disable : 4996)
-using namespace std;
-#define rep(l,a,b) for(ll l=a;l&lt;=b;l++)
-#define repp(l,a,b) for(ll l=a;l&gt;=b;l--)
-#define mem(x) memset(x,0,sizeof(x))
-#define fr fast_IO::read()
-#define INF 0x3f3f3f3f
-namespace fast_IO {
-	ll read() {
-		ll num = 0;
-		char c;
-		bool tag = false;
-		while ((c = getchar()) != &#39;-&#39; &amp;&amp; c != &#39;+&#39; &amp;&amp; (c &lt; &#39;0&#39; || c &gt; &#39;9&#39;) &amp;&amp; ~c);
-		if (!~c)return EOF;
-		if (c == &#39;-&#39;)tag = true;
-		else if (c == &#39;+&#39;)tag = false;
-		else num = c ^ 48;
-		while ((c = getchar()) &gt;= &#39;0&#39; &amp;&amp; c &lt;= &#39;9&#39;)
-			num = (num &lt;&lt; 1) + (num &lt;&lt; 3) + (c ^ 48);
-		if (tag)return -num;
-		return num;
-	}
-}
-const ll mod = 50001;
-#define N 5001
-ll n, m, p;
-/*
-ll f[N];
-ll find(int x)
-{
-	if (f[x] != x) f[x] = find(f[x]);
-	return f[x];
-}
-*/
-/*
-ll head[5001], edges[N], ne[N], we[N],idx;
-void add(int u, int v, int w)
-{
-	edges[++idx] = v;
-	we[idx] = w;
-	ne[idx] = head[u];
-	head[u] = idx;
-}
-*/
-int dist[N];
-int mp[N][N];
-bool st[N];
-int prim()
-{
-	memset(dist, 0x3f, sizeof(dist));
-	int res = 0;
-	rep(i, 0, n-1)
-	{
-		int t = -1;
-		rep(j, 1, n)
-			if (st[j] == 0 &amp;&amp; (t == -1 || dist[t] &gt; dist[j]))
-				t = j;
-			st[t] = true;
-			if (i &amp;&amp; dist[t] == INF) return INF;
-			if (i) res += dist[t]; 
-			//cout &lt;&lt; t &lt;&lt; endl;
-			rep(j, 1, n) dist[j] = min(dist[j], mp[t][j]);
-	}
-	return res;
-}
-signed main()
-{
-	//freopen(&quot;in.txt&quot;, &quot;r&quot;, stdin);
-	cin &gt;&gt; n &gt;&gt; m;
-	memset(mp, 0x3f, sizeof(mp));
-	rep(i, 1, m)
-	{
-		int u, v, w;
-		u = fr, v = fr, w = fr;
-		mp[u][v] = mp[v][u]=min(mp[u][v],w);
-	}
-	ll ans = prim();
-	if (ans == INF) cout &lt;&lt; &quot;orz&quot; &lt;&lt; endl;
-	else cout &lt;&lt; ans &lt;&lt; endl;
-}
-</code></pre>
-	<p>Kruskal算法（见板子）</p>
-	<p>并查集模板</p>
-	<pre><code class='language-c++' lang='c++'>ll find(int x)//用于查找这个连通块的根结点，每次查找都会讲涉及到的点更新为答案以便下一次查找
-{
-	if (f[x] != x) f[x] = find(f[x]);
-	return f[x];
-}
-</code></pre>
-	<p>需要合并两个连通块时：</p>
-	<pre><code class='language-c++' lang='c++'>f[find(x)] = find(y);
-</code></pre>
-	<h2 id='字符串哈希'>字符串哈希</h2>
-	<p>字符串哈希可以将一个序列转换成一个数值存放于数组中，便于查询和统计数目。一维字符串可以用unordered_map来解决，用之前用reserve函数预分配空间可以加快处理的时间。此外还能将字符串视为一个P进制数，于是可以得到哈希值为a0<em>p+a1</em>p^2+……+an*p^n.而如果遇到二维矩阵或者是三维矩阵，unordered_map就无法处理，这时候需要选2个合适的哈希P值，比如9191891,6893911。
+	</div>
+	<!--导航条-->
+	<!--侧边导航-->
+	<ul class="layui-nav layui-nav-tree layui-nav-side" style="position: fixed;top: 7%;" lay-filter="test">
+		<!-- 侧边导航: <ul class="layui-nav layui-nav-tree layui-nav-side"> -->
+		<li class="layui-nav-item" style="text-align: center;"><a href="/acm/week1" style="font-size: 25px;">第一周<br></a></li>
+		<li class="layui-nav-item" style="text-align: center;"><a href="/acm/week2" style="font-size: 25px;">第二周</a></li>
+		<li class="layui-nav-item" style="text-align: center;"><a href="/acm/week3" style="font-size: 25px;">第三周</a></li>
+		<li class="layui-nav-item" style="text-align: center;"><a href="/acm/week4" style="font-size: 25px;">第四周</a></li>
+		<li class="layui-nav-item" style="text-align: center;"><a href="/acm/week5" style="font-size: 25px;">第五周</a></li>
+		<li class="layui-nav-item" style="text-align: center;position:absolute;top: 480px;"><a style="font-size: 40px;font-family: Edwardian Script ITC;">Mathematics</a></li>
+		<li class="layui-nav-item" style="text-align: center;position:absolute;top: 530px;"><a style="font-size: 40px;font-family: Edwardian Script ITC;">And</a></li>
+		<li class="layui-nav-item" style="text-align: center;position:absolute;top: 580px;"><a style="font-size: 40px;font-family: Edwardian Script ITC;">Algorithms</a></li>
+	  </ul>
+	  <!--侧边导航-->
+	<div class='typora-export-content'>
+		<div id='write' class=''>
+			<h1 id='第四周学习报告------李天航'><span>第四周学习报告——李天航</span></h1>
+			<h2 id='并查集和最小生成树'><span>并查集和最小生成树</span></h2>
+			<p><span>并查集用于解决不同集合之间的问题，而最小生成树用于求解不同集合连接起来的最短路径。如果有多个不同类比的集合则需要用到扩域并查集和权值并查集等。</span></p>
+			<p><span>最小生成树有两种算法，prim算法和卡鲁斯卡尔算法。</span></p>
+			<p><span>prim算法，prim算法需要用到邻接矩阵，时间和空间花费都比较大，因而Kruskal算法用得较多。</span></p>
+			<pre class="md-fences md-end-block ty-contain-cm modeLoaded" spellcheck="false" lang="c++"
+				style="break-inside: unset;"><div class="CodeMirror cm-s-inner cm-s-null-scroll CodeMirror-wrap" lang="c++"><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 9.2px; left: 8px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; bottom: -1em; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 0px; margin-bottom: 0px; border-right-width: 0px; padding-right: 0px; padding-bottom: 0px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines" role="presentation"><div role="presentation" style="position: relative; outline: none;"><div class="CodeMirror-measure"></div><div class="CodeMirror-measure"></div><div style="position: relative; z-index: 1;"></div><div class="CodeMirror-code" role="presentation" style=""><div class="CodeMirror-activeline" style="position: relative;"><div class="CodeMirror-activeline-background CodeMirror-linebackground"></div><div class="CodeMirror-gutter-background CodeMirror-activeline-gutter" style="left: 0px; width: 0px;"></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-meta">#include&lt;cstdio&gt;</span></span></pre>
+		</div>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-meta">#include&lt;iostream&gt;</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-meta">#include&lt;math.h&gt;</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-meta">#include&lt;algorithm&gt;</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-meta">#include&lt;cstring&gt;</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-comment">//#include&lt;unordered_map&gt;</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-meta">#include&lt;string&gt;</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-meta">#include&lt;queue&gt;</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-meta">#include&lt;map&gt;</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-meta">#include&lt;ctime&gt;</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-meta">#include&lt;limits.h&gt;</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-meta">#include &lt;stack&gt;</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-meta">#include&lt;set&gt;</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-meta">#include&lt;iomanip&gt;</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-meta">#define ll long long</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-meta">#pragma warning(disable : 4996)</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-keyword">using</span> <span class="cm-keyword">namespace</span> <span class="cm-def">std</span>;</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-meta">#define rep(l,a,b) for(ll l=a;l&lt;=b;l++)</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-meta">#define repp(l,a,b) for(ll l=a;l&gt;=b;l--)</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-meta">#define mem(x) memset(x,0,sizeof(x))</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-meta">#define fr fast_IO::read()</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-meta">#define INF 0x3f3f3f3f</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-keyword">namespace</span> <span class="cm-def">fast_IO</span> {</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-variable">ll</span> <span class="cm-def">read</span>() {</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-variable">ll</span> <span class="cm-variable">num</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>;</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-variable-3">char</span> <span class="cm-variable">c</span>;</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-variable-3">bool</span> <span class="cm-variable">tag</span> <span class="cm-operator">=</span> <span class="cm-atom">false</span>;</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-keyword">while</span> ((<span class="cm-variable">c</span> <span class="cm-operator">=</span> <span class="cm-variable">getchar</span>()) <span class="cm-operator">!=</span> <span class="cm-string">'-'</span> <span class="cm-operator">&amp;&amp;</span> <span class="cm-variable">c</span> <span class="cm-operator">!=</span> <span class="cm-string">'+'</span> <span class="cm-operator">&amp;&amp;</span> (<span class="cm-variable">c</span> <span class="cm-operator">&lt;</span> <span class="cm-string">'0'</span> <span class="cm-operator">||</span> <span class="cm-variable">c</span> <span class="cm-operator">&gt;</span> <span class="cm-string">'9'</span>) <span class="cm-operator">&amp;&amp;</span> <span class="cm-variable">~c</span>);</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-keyword">if</span> (<span class="cm-operator">!</span><span class="cm-variable">~c</span>)<span class="cm-keyword">return</span> <span class="cm-variable">EOF</span>;</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-keyword">if</span> (<span class="cm-variable">c</span> <span class="cm-operator">==</span> <span class="cm-string">'-'</span>)<span class="cm-variable">tag</span> <span class="cm-operator">=</span> <span class="cm-atom">true</span>;</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-keyword">else</span> <span class="cm-keyword">if</span> (<span class="cm-variable">c</span> <span class="cm-operator">==</span> <span class="cm-string">'+'</span>)<span class="cm-variable">tag</span> <span class="cm-operator">=</span> <span class="cm-atom">false</span>;</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-keyword">else</span> <span class="cm-variable">num</span> <span class="cm-operator">=</span> <span class="cm-variable">c</span> <span class="cm-variable">^</span> <span class="cm-number">48</span>;</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-keyword">while</span> ((<span class="cm-variable">c</span> <span class="cm-operator">=</span> <span class="cm-variable">getchar</span>()) <span class="cm-operator">&gt;=</span> <span class="cm-string">'0'</span> <span class="cm-operator">&amp;&amp;</span> <span class="cm-variable">c</span> <span class="cm-operator">&lt;=</span> <span class="cm-string">'9'</span>)</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-variable">num</span> <span class="cm-operator">=</span> (<span class="cm-variable">num</span> <span class="cm-operator">&lt;&lt;</span> <span class="cm-number">1</span>) <span class="cm-operator">+</span> (<span class="cm-variable">num</span> <span class="cm-operator">&lt;&lt;</span> <span class="cm-number">3</span>) <span class="cm-operator">+</span> (<span class="cm-variable">c</span> <span class="cm-variable">^</span> <span class="cm-number">48</span>);</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-keyword">if</span> (<span class="cm-variable">tag</span>)<span class="cm-keyword">return</span> <span class="cm-operator">-</span><span class="cm-variable">num</span>;</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-keyword">return</span> <span class="cm-variable">num</span>;</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span>}</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;">}</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-keyword">const</span> <span class="cm-variable">ll</span> <span class="cm-variable">mod</span> <span class="cm-operator">=</span> <span class="cm-number">50001</span>;</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-meta">#define N 5001</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-variable">ll</span> <span class="cm-variable">n</span>, <span class="cm-variable">m</span>, <span class="cm-variable">p</span>;</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-comment">/*</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-comment">ll f[N];</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-comment">ll find(int x)</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-comment">{</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-comment">if (f[x] != x) f[x] = find(f[x]);</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-comment">return f[x];</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-comment">}</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-comment">*/</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-comment">/*</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-comment">ll head[5001], edges[N], ne[N], we[N],idx;</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-comment">void add(int u, int v, int w)</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-comment">{</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-comment">edges[++idx] = v;</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-comment">we[idx] = w;</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-comment">ne[idx] = head[u];</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-comment">head[u] = idx;</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-comment">}</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-comment">*/</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-variable-3">int</span> <span class="cm-variable">dist</span>[<span class="cm-variable">N</span>];</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-variable-3">int</span> <span class="cm-variable">mp</span>[<span class="cm-variable">N</span>][<span class="cm-variable">N</span>];</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-variable-3">bool</span> <span class="cm-variable">st</span>[<span class="cm-variable">N</span>];</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-variable-3">int</span> <span class="cm-def">prim</span>()</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;">{</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-variable">memset</span>(<span class="cm-variable">dist</span>, <span class="cm-number">0x3f</span>, <span class="cm-keyword">sizeof</span>(<span class="cm-variable">dist</span>));</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-variable-3">int</span> <span class="cm-variable">res</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>;</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-variable">rep</span>(<span class="cm-variable">i</span>, <span class="cm-number">0</span>, <span class="cm-variable">n</span><span class="cm-operator">-</span><span class="cm-number">1</span>)</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span>{</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-variable-3">int</span> <span class="cm-variable">t</span> <span class="cm-operator">=</span> <span class="cm-operator">-</span><span class="cm-number">1</span>;</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-variable">rep</span>(<span class="cm-variable">j</span>, <span class="cm-number">1</span>, <span class="cm-variable">n</span>)</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-keyword">if</span> (<span class="cm-variable">st</span>[<span class="cm-variable">j</span>] <span class="cm-operator">==</span> <span class="cm-number">0</span> <span class="cm-operator">&amp;&amp;</span> (<span class="cm-variable">t</span> <span class="cm-operator">==</span> <span class="cm-operator">-</span><span class="cm-number">1</span> <span class="cm-operator">||</span> <span class="cm-variable">dist</span>[<span class="cm-variable">t</span>] <span class="cm-operator">&gt;</span> <span class="cm-variable">dist</span>[<span class="cm-variable">j</span>]))</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-variable">t</span> <span class="cm-operator">=</span> <span class="cm-variable">j</span>;</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-variable">st</span>[<span class="cm-variable">t</span>] <span class="cm-operator">=</span> <span class="cm-atom">true</span>;</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-keyword">if</span> (<span class="cm-variable">i</span> <span class="cm-operator">&amp;&amp;</span> <span class="cm-variable">dist</span>[<span class="cm-variable">t</span>] <span class="cm-operator">==</span> <span class="cm-variable">INF</span>) <span class="cm-keyword">return</span> <span class="cm-variable">INF</span>;</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-keyword">if</span> (<span class="cm-variable">i</span>) <span class="cm-variable">res</span> <span class="cm-operator">+=</span> <span class="cm-variable">dist</span>[<span class="cm-variable">t</span>]; </span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-comment">//cout &lt;&lt; t &lt;&lt; endl;</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-variable">rep</span>(<span class="cm-variable">j</span>, <span class="cm-number">1</span>, <span class="cm-variable">n</span>) <span class="cm-variable">dist</span>[<span class="cm-variable">j</span>] <span class="cm-operator">=</span> <span class="cm-variable">min</span>(<span class="cm-variable">dist</span>[<span class="cm-variable">j</span>], <span class="cm-variable">mp</span>[<span class="cm-variable">t</span>][<span class="cm-variable">j</span>]);</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span>}</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-keyword">return</span> <span class="cm-variable">res</span>;</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;">}</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-variable-3">signed</span> <span class="cm-def">main</span>()</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;">{</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-comment">//freopen("in.txt", "r", stdin);</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-variable">cin</span> <span class="cm-operator">&gt;&gt;</span> <span class="cm-variable">n</span> <span class="cm-operator">&gt;&gt;</span> <span class="cm-variable">m</span>;</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-variable">memset</span>(<span class="cm-variable">mp</span>, <span class="cm-number">0x3f</span>, <span class="cm-keyword">sizeof</span>(<span class="cm-variable">mp</span>));</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-variable">rep</span>(<span class="cm-variable">i</span>, <span class="cm-number">1</span>, <span class="cm-variable">m</span>)</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span>{</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-variable-3">int</span> <span class="cm-variable">u</span>, <span class="cm-variable">v</span>, <span class="cm-variable">w</span>;</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-variable">u</span> <span class="cm-operator">=</span> <span class="cm-variable">fr</span>, <span class="cm-variable">v</span> <span class="cm-operator">=</span> <span class="cm-variable">fr</span>, <span class="cm-variable">w</span> <span class="cm-operator">=</span> <span class="cm-variable">fr</span>;</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-variable">mp</span>[<span class="cm-variable">u</span>][<span class="cm-variable">v</span>] <span class="cm-operator">=</span> <span class="cm-variable">mp</span>[<span class="cm-variable">v</span>][<span class="cm-variable">u</span>]<span class="cm-operator">=</span><span class="cm-variable">min</span>(<span class="cm-variable">mp</span>[<span class="cm-variable">u</span>][<span class="cm-variable">v</span>],<span class="cm-variable">w</span>);</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span>}</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-variable">ll</span> <span class="cm-variable">ans</span> <span class="cm-operator">=</span> <span class="cm-variable">prim</span>();</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-keyword">if</span> (<span class="cm-variable">ans</span> <span class="cm-operator">==</span> <span class="cm-variable">INF</span>) <span class="cm-variable">cout</span> <span class="cm-operator">&lt;&lt;</span> <span class="cm-string">"orz"</span> <span class="cm-operator">&lt;&lt;</span> <span class="cm-variable">endl</span>;</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-keyword">else</span> <span class="cm-variable">cout</span> <span class="cm-operator">&lt;&lt;</span> <span class="cm-variable">ans</span> <span class="cm-operator">&lt;&lt;</span> <span class="cm-variable">endl</span>;</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;">}</span></pre>
+	</div>
+	</div>
+	</div>
+	</div>
+	</div>
+	<div style="position: absolute; height: 0px; width: 1px; border-bottom: 0px solid transparent; top: 2240px;"></div>
+	<div class="CodeMirror-gutters" style="display: none; height: 2240px;"></div>
+	</div>
+	</div>
+	</pre>
+	<p><span>Kruskal算法（见板子）</span></p>
+	<p><span>并查集模板</span></p>
+	<pre class="md-fences md-end-block ty-contain-cm modeLoaded" spellcheck="false"
+		lang="c++"><div class="CodeMirror cm-s-inner cm-s-null-scroll CodeMirror-wrap" lang="c++"><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 9.20007px; left: 8px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; bottom: -1em; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 0px; margin-bottom: 0px; border-right-width: 0px; padding-right: 0px; padding-bottom: 0px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines" role="presentation"><div role="presentation" style="position: relative; outline: none;"><div class="CodeMirror-measure"><pre><span>xxxxxxxxxx</span></pre>
+	</div>
+	<div class="CodeMirror-measure"></div>
+	<div style="position: relative; z-index: 1;"></div>
+	<div class="CodeMirror-code" role="presentation" style="">
+		<div class="CodeMirror-activeline" style="position: relative;">
+			<div class="CodeMirror-activeline-background CodeMirror-linebackground"></div>
+			<div class="CodeMirror-gutter-background CodeMirror-activeline-gutter" style="left: 0px; width: 0px;"></div>
+			<pre class=" CodeMirror-line "
+				role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-variable">ll</span> <span class="cm-def">find</span>(<span class="cm-variable-3">int</span> <span class="cm-variable">x</span>)<span class="cm-comment">//用于查找这个连通块的根结点，每次查找都会讲涉及到的点更新为答案以便下一次查找</span></span></pre>
+		</div>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;">{</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-keyword">if</span> (<span class="cm-variable">f</span>[<span class="cm-variable">x</span>] <span class="cm-operator">!=</span> <span class="cm-variable">x</span>) <span class="cm-variable">f</span>[<span class="cm-variable">x</span>] <span class="cm-operator">=</span> <span class="cm-variable">find</span>(<span class="cm-variable">f</span>[<span class="cm-variable">x</span>]);</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-keyword">return</span> <span class="cm-variable">f</span>[<span class="cm-variable">x</span>];</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;">}</span></pre>
+	</div>
+	</div>
+	</div>
+	</div>
+	</div>
+	<div style="position: absolute; height: 0px; width: 1px; border-bottom: 0px solid transparent; top: 134px;"></div>
+	<div class="CodeMirror-gutters" style="display: none; height: 134px;"></div>
+	</div>
+	</div>
+	</pre>
+	<p><span>需要合并两个连通块时：</span></p>
+	<pre class="md-fences md-end-block ty-contain-cm modeLoaded" spellcheck="false"
+		lang="c++"><div class="CodeMirror cm-s-inner cm-s-null-scroll CodeMirror-wrap" lang="c++"><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 9.2px; left: 8px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; bottom: -1em; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 0px; margin-bottom: 0px; border-right-width: 0px; padding-right: 0px; padding-bottom: 0px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines" role="presentation"><div role="presentation" style="position: relative; outline: none;"><div class="CodeMirror-measure"><pre><span>xxxxxxxxxx</span></pre>
+	</div>
+	<div class="CodeMirror-measure"></div>
+	<div style="position: relative; z-index: 1;"></div>
+	<div class="CodeMirror-code" role="presentation">
+		<div class="CodeMirror-activeline" style="position: relative;">
+			<div class="CodeMirror-activeline-background CodeMirror-linebackground"></div>
+			<div class="CodeMirror-gutter-background CodeMirror-activeline-gutter" style="left: 0px; width: 0px;"></div>
+			<pre class=" CodeMirror-line "
+				role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-variable">f</span>[<span class="cm-variable">find</span>(<span class="cm-variable">x</span>)] <span class="cm-operator">=</span> <span class="cm-variable">find</span>(<span class="cm-variable">y</span>);</span></pre>
+		</div>
+	</div>
+	</div>
+	</div>
+	</div>
+	</div>
+	<div style="position: absolute; height: 0px; width: 1px; border-bottom: 0px solid transparent; top: 22px;"></div>
+	<div class="CodeMirror-gutters" style="display: none; height: 22px;"></div>
+	</div>
+	</div>
+	</pre>
+	<h2 id='字符串哈希'><span>字符串哈希</span></h2>
+	<p><span>字符串哈希可以将一个序列转换成一个数值存放于数组中，便于查询和统计数目。一维字符串可以用unordered_map来解决，用之前用reserve函数预分配空间可以加快处理的时间。此外还能将字符串视为一个P进制数，于是可以得到哈希值为a0</span><em><span>p+a1</span></em><span>p^2+……+an*p^n.而如果遇到二维矩阵或者是三维矩阵，unordered_map就无法处理，这时候需要选2个合适的哈希P值，比如9191891,6893911。</span>
 	</p>
-	<p>先对每一行进行列哈希，然后再对每一行进行哈希。将用到的值设为ull(unsigned long long)可以用于自然溢出取模。</p>
-	<pre><code class='language-c++' lang='c++'>rep(i, 1, n)
-		rep(j, 1, n)
-		hs[i][j] = hs[i][j - 1] * base[0] + a[i][j];
-
-	rep(i, 1, n)
-		rep(j, 1, n)
-		hs[i][j] += hs[i - 1][j] * base[1];
-</code></pre>
-	<p>然后先预处理每一位的进制数</p>
-	<pre><code class='language-c++' lang='c++'>rep(i, 1, 99)
-		pow1[i] = pow1[i - 1] * base[0], pow2[i] = pow2[i - 1] * base[1];
-</code></pre>
-	<p>然后用这个公式计算哈希值</p>
-	<pre><code class='language-c++' lang='c++'>ull gethash(int i, int j, int x, int y)
-{
-	return hs[x][y] - hs[i - 1][y] * pow2[x - i + 1] - hs[x][j - 1] * pow1[y - j + 1] + hs[i - 1][j - 1] * pow1[y - j + 1] * pow2[x - i + 1];
-}
-</code></pre>
-	<p>然后将得到的哈希值放入unordered_map进行处理即可。</p>
-	<h2 id='trie树'>trie树</h2>
-	<p>trie树也就是字典树，用于处理和字符串前缀相关的问题。它将字符串中的每个字母和每个结点进行编号，然后动态地将每一个结点按次序存入一个二维数组trie[N] [M]中N代表结点的序号，M代表可能出现的子节点数目。</p>
-	<p>插入操作：</p>
-	<pre><code class='language-c++' lang='c++'>#define N 5000001
-ll n, m;
-int son[N][30], cnt[N], idx, flag;
-int pre[N],sum[N];//pre用来记录前驱结点，sum用来记录当前子树的和
-int insert(string s)
-{
-	int p = 0;//初始结点root
-	bool flag1 = false, flag2 = false;//统计一些需要的信息
-	rep(i, 0, s.length() - 1)//遍历每个字母，将它们插入到树中
-	{
-		int u = s[i] - &#39;0&#39;;//获取一个新编号
-//如果走到了同一个结点，也就是前缀相同，就继续走下去。
-		if (!son[p][u])//如果树中没有我需要的结点则开辟一个新结点，赋予其一个新的编号
-			son[p][u] = ++idx, flag1 = true,pre[idx]=p;//新的结点
-		p = son[p][u];//走到子节点
-		if (cnt[p] &gt; 0) flag2 = true;
-	}
-	cnt[p]++;//一个字符串走完后，在最后一个结点上做标记，说明这里有个字符串
-    while (p!=0)
-	{
-		sum[p] = cnt[p] + sum[son[p][0]] + sum[son[p][1]];//统计有多少字符串将p字符串作为前驱
-		p = pre[p];
-	}
-	if (flag2 == true || flag1 == false)
-		return true;
-	else
-		return false;
-}
-</code></pre>
-	<p>查询：</p>
-	<pre><code class='language-c++' lang='c++'>int query(int l)//查询过程和插入类似，都要在树中走一般，只是不会改变数的结构
-{
-	int p = 0;
-	ll ans = 0;
-	rep(i, 1, l)
-	{
-		int u = s[i];
-		if (son[p][u] == 0) return ans;
-		p = son[p][u];
-		ans += cnt[p];
-	}
-	ans += sum[p]-cnt[p];
-	return ans;
-}
-</code></pre>
-	<h2 id='kmp和ac自动机'>kmp和AC自动机</h2>
-	<p>kmp算法用于文本串和模式串的匹配。先对模式串进行预处理，找出各个长度的最长公共前后缀，将后缀的起始位置存入数组ne中，这其实也是加速匹配的基础。在模式串与文本串匹配的过程中已经匹配成功的长度为len，那么如果第len+1位匹配失败，则将模式串向前移动，使得当前长度的前缀移动至与后缀平齐也就是j=ne[j]，这样新进行匹配的长度就为前缀的长度，在此基础上继续匹配下一位。
+	<p><span>先对每一行进行列哈希，然后再对每一行进行哈希。将用到的值设为ull(unsigned long long)可以用于自然溢出取模。</span></p>
+	<pre class="md-fences md-end-block ty-contain-cm modeLoaded" spellcheck="false"
+		lang="c++"><div class="CodeMirror cm-s-inner cm-s-null-scroll CodeMirror-wrap" lang="c++"><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 9.2px; left: 8px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; bottom: -1em; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 0px; margin-bottom: 0px; border-right-width: 0px; padding-right: 0px; padding-bottom: 0px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines" role="presentation"><div role="presentation" style="position: relative; outline: none;"><div class="CodeMirror-measure"><span><span>​</span>x</span></div><div class="CodeMirror-measure"></div><div style="position: relative; z-index: 1;"></div><div class="CodeMirror-code" role="presentation" style=""><div class="CodeMirror-activeline" style="position: relative;"><div class="CodeMirror-activeline-background CodeMirror-linebackground"></div><div class="CodeMirror-gutter-background CodeMirror-activeline-gutter" style="left: 0px; width: 0px;"></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-variable">rep</span>(<span class="cm-variable">i</span>, <span class="cm-number">1</span>, <span class="cm-variable">n</span>)</span></pre>
+	</div>
+	<pre class=" CodeMirror-line "
+		role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-variable">rep</span>(<span class="cm-variable">j</span>, <span class="cm-number">1</span>, <span class="cm-variable">n</span>)</span></pre>
+	<pre class=" CodeMirror-line "
+		role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-variable">hs</span>[<span class="cm-variable">i</span>][<span class="cm-variable">j</span>] <span class="cm-operator">=</span> <span class="cm-variable">hs</span>[<span class="cm-variable">i</span>][<span class="cm-variable">j</span> <span class="cm-operator">-</span> <span class="cm-number">1</span>] <span class="cm-operator">*</span> <span class="cm-variable">base</span>[<span class="cm-number">0</span>] <span class="cm-operator">+</span> <span class="cm-variable">a</span>[<span class="cm-variable">i</span>][<span class="cm-variable">j</span>];</span></pre>
+	<pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span cm-text="" cm-zwsp="">
+</span></span></pre>
+	<pre class=" CodeMirror-line "
+		role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-variable">rep</span>(<span class="cm-variable">i</span>, <span class="cm-number">1</span>, <span class="cm-variable">n</span>)</span></pre>
+	<pre class=" CodeMirror-line "
+		role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-variable">rep</span>(<span class="cm-variable">j</span>, <span class="cm-number">1</span>, <span class="cm-variable">n</span>)</span></pre>
+	<pre class=" CodeMirror-line "
+		role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-variable">hs</span>[<span class="cm-variable">i</span>][<span class="cm-variable">j</span>] <span class="cm-operator">+=</span> <span class="cm-variable">hs</span>[<span class="cm-variable">i</span> <span class="cm-operator">-</span> <span class="cm-number">1</span>][<span class="cm-variable">j</span>] <span class="cm-operator">*</span> <span class="cm-variable">base</span>[<span class="cm-number">1</span>];</span></pre>
+	</div>
+	</div>
+	</div>
+	</div>
+	</div>
+	<div style="position: absolute; height: 0px; width: 1px; border-bottom: 0px solid transparent; top: 179px;"></div>
+	<div class="CodeMirror-gutters" style="display: none; height: 179px;"></div>
+	</div>
+	</div>
+	</pre>
+	<p><span>然后先预处理每一位的进制数</span></p>
+	<pre class="md-fences md-end-block ty-contain-cm modeLoaded" spellcheck="false"
+		lang="c++"><div class="CodeMirror cm-s-inner cm-s-null-scroll CodeMirror-wrap" lang="c++"><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 9.2px; left: 8px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; bottom: -1em; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 0px; margin-bottom: 0px; border-right-width: 0px; padding-right: 0px; padding-bottom: 0px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines" role="presentation"><div role="presentation" style="position: relative; outline: none;"><div class="CodeMirror-measure"><pre><span>xxxxxxxxxx</span></pre>
+	</div>
+	<div class="CodeMirror-measure"></div>
+	<div style="position: relative; z-index: 1;"></div>
+	<div class="CodeMirror-code" role="presentation">
+		<div class="CodeMirror-activeline" style="position: relative;">
+			<div class="CodeMirror-activeline-background CodeMirror-linebackground"></div>
+			<div class="CodeMirror-gutter-background CodeMirror-activeline-gutter" style="left: 0px; width: 0px;"></div>
+			<pre class=" CodeMirror-line "
+				role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-variable">rep</span>(<span class="cm-variable">i</span>, <span class="cm-number">1</span>, <span class="cm-number">99</span>)</span></pre>
+		</div>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-variable">pow1</span>[<span class="cm-variable">i</span>] <span class="cm-operator">=</span> <span class="cm-variable">pow1</span>[<span class="cm-variable">i</span> <span class="cm-operator">-</span> <span class="cm-number">1</span>] <span class="cm-operator">*</span> <span class="cm-variable">base</span>[<span class="cm-number">0</span>], <span class="cm-variable">pow2</span>[<span class="cm-variable">i</span>] <span class="cm-operator">=</span> <span class="cm-variable">pow2</span>[<span class="cm-variable">i</span> <span class="cm-operator">-</span> <span class="cm-number">1</span>] <span class="cm-operator">*</span> <span class="cm-variable">base</span>[<span class="cm-number">1</span>];</span></pre>
+	</div>
+	</div>
+	</div>
+	</div>
+	</div>
+	<div style="position: absolute; height: 0px; width: 1px; border-bottom: 0px solid transparent; top: 67px;"></div>
+	<div class="CodeMirror-gutters" style="display: none; height: 67px;"></div>
+	</div>
+	</div>
+	</pre>
+	<p><span>然后用这个公式计算哈希值</span></p>
+	<pre class="md-fences md-end-block ty-contain-cm modeLoaded" spellcheck="false"
+		lang="c++"><div class="CodeMirror cm-s-inner cm-s-null-scroll CodeMirror-wrap" lang="c++"><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 9.2px; left: 8px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; bottom: -1em; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 0px; margin-bottom: 0px; border-right-width: 0px; padding-right: 0px; padding-bottom: 0px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines" role="presentation"><div role="presentation" style="position: relative; outline: none;"><div class="CodeMirror-measure"><pre><span>xxxxxxxxxx</span></pre>
+	</div>
+	<div class="CodeMirror-measure"></div>
+	<div style="position: relative; z-index: 1;"></div>
+	<div class="CodeMirror-code" role="presentation">
+		<div class="CodeMirror-activeline" style="position: relative;">
+			<div class="CodeMirror-activeline-background CodeMirror-linebackground"></div>
+			<div class="CodeMirror-gutter-background CodeMirror-activeline-gutter" style="left: 0px; width: 0px;"></div>
+			<pre class=" CodeMirror-line "
+				role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-variable">ull</span> <span class="cm-def">gethash</span>(<span class="cm-variable-3">int</span> <span class="cm-variable">i</span>, <span class="cm-variable-3">int</span> <span class="cm-variable">j</span>, <span class="cm-variable-3">int</span> <span class="cm-variable">x</span>, <span class="cm-variable-3">int</span> <span class="cm-variable">y</span>)</span></pre>
+		</div>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;">{</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-keyword">return</span> <span class="cm-variable">hs</span>[<span class="cm-variable">x</span>][<span class="cm-variable">y</span>] <span class="cm-operator">-</span> <span class="cm-variable">hs</span>[<span class="cm-variable">i</span> <span class="cm-operator">-</span> <span class="cm-number">1</span>][<span class="cm-variable">y</span>] <span class="cm-operator">*</span> <span class="cm-variable">pow2</span>[<span class="cm-variable">x</span> <span class="cm-operator">-</span> <span class="cm-variable">i</span> <span class="cm-operator">+</span> <span class="cm-number">1</span>] <span class="cm-operator">-</span> <span class="cm-variable">hs</span>[<span class="cm-variable">x</span>][<span class="cm-variable">j</span> <span class="cm-operator">-</span> <span class="cm-number">1</span>] <span class="cm-operator">*</span> <span class="cm-variable">pow1</span>[<span class="cm-variable">y</span> <span class="cm-operator">-</span> <span class="cm-variable">j</span> <span class="cm-operator">+</span> <span class="cm-number">1</span>] <span class="cm-operator">+</span> <span class="cm-variable">hs</span>[<span class="cm-variable">i</span> <span class="cm-operator">-</span> <span class="cm-number">1</span>][<span class="cm-variable">j</span> <span class="cm-operator">-</span> <span class="cm-number">1</span>] <span class="cm-operator">*</span> <span class="cm-variable">pow1</span>[<span class="cm-variable">y</span> <span class="cm-operator">-</span> <span class="cm-variable">j</span> <span class="cm-operator">+</span> <span class="cm-number">1</span>] <span class="cm-operator">*</span> <span class="cm-variable">pow2</span>[<span class="cm-variable">x</span> <span class="cm-operator">-</span> <span class="cm-variable">i</span> <span class="cm-operator">+</span> <span class="cm-number">1</span>];</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;">}</span></pre>
+	</div>
+	</div>
+	</div>
+	</div>
+	</div>
+	<div style="position: absolute; height: 0px; width: 1px; border-bottom: 0px solid transparent; top: 134px;"></div>
+	<div class="CodeMirror-gutters" style="display: none; height: 134px;"></div>
+	</div>
+	</div>
+	</pre>
+	<p><span>然后将得到的哈希值放入unordered_map进行处理即可。</span></p>
+	<h2 id='trie树'><span>trie树</span></h2>
+	<p><span>trie树也就是字典树，用于处理和字符串前缀相关的问题。它将字符串中的每个字母和每个结点进行编号，然后动态地将每一个结点按次序存入一个二维数组trie[N]
+			[M]中N代表结点的序号，M代表可能出现的子节点数目。</span></p>
+	<p><span>插入操作：</span></p>
+	<pre class="md-fences md-end-block ty-contain-cm modeLoaded" spellcheck="false" lang="c++"
+		style="break-inside: unset;"><div class="CodeMirror cm-s-inner cm-s-null-scroll CodeMirror-wrap" lang="c++"><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 9.2px; left: 8px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; bottom: -1em; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 0px; margin-bottom: 0px; border-right-width: 0px; padding-right: 0px; padding-bottom: 0px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines" role="presentation"><div role="presentation" style="position: relative; outline: none;"><div class="CodeMirror-measure"><pre><span>xxxxxxxxxx</span></pre>
+	</div>
+	<div class="CodeMirror-measure"></div>
+	<div style="position: relative; z-index: 1;"></div>
+	<div class="CodeMirror-code" role="presentation" style="">
+		<div class="CodeMirror-activeline" style="position: relative;">
+			<div class="CodeMirror-activeline-background CodeMirror-linebackground"></div>
+			<div class="CodeMirror-gutter-background CodeMirror-activeline-gutter" style="left: 0px; width: 0px;"></div>
+			<pre class=" CodeMirror-line "
+				role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-meta">#define N 5000001</span></span></pre>
+		</div>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-variable">ll</span> <span class="cm-variable">n</span>, <span class="cm-variable">m</span>;</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-variable-3">int</span> <span class="cm-variable">son</span>[<span class="cm-variable">N</span>][<span class="cm-number">30</span>], <span class="cm-variable">cnt</span>[<span class="cm-variable">N</span>], <span class="cm-variable">idx</span>, <span class="cm-variable">flag</span>;</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-variable-3">int</span> <span class="cm-variable">pre</span>[<span class="cm-variable">N</span>],<span class="cm-variable">sum</span>[<span class="cm-variable">N</span>];<span class="cm-comment">//pre用来记录前驱结点，sum用来记录当前子树的和</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-variable-3">int</span> <span class="cm-def">insert</span>(<span class="cm-variable">string</span> <span class="cm-variable">s</span>)</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;">{</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-variable-3">int</span> <span class="cm-variable">p</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>;<span class="cm-comment">//初始结点root</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-variable-3">bool</span> <span class="cm-variable">flag1</span> <span class="cm-operator">=</span> <span class="cm-atom">false</span>, <span class="cm-variable">flag2</span> <span class="cm-operator">=</span> <span class="cm-atom">false</span>;<span class="cm-comment">//统计一些需要的信息</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-variable">rep</span>(<span class="cm-variable">i</span>, <span class="cm-number">0</span>, <span class="cm-variable">s</span>.<span class="cm-variable">length</span>() <span class="cm-operator">-</span> <span class="cm-number">1</span>)<span class="cm-comment">//遍历每个字母，将它们插入到树中</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span>{</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-variable-3">int</span> <span class="cm-variable">u</span> <span class="cm-operator">=</span> <span class="cm-variable">s</span>[<span class="cm-variable">i</span>] <span class="cm-operator">-</span> <span class="cm-string">'0'</span>;<span class="cm-comment">//获取一个新编号</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-comment">//如果走到了同一个结点，也就是前缀相同，就继续走下去。</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-keyword">if</span> (<span class="cm-operator">!</span><span class="cm-variable">son</span>[<span class="cm-variable">p</span>][<span class="cm-variable">u</span>])<span class="cm-comment">//如果树中没有我需要的结点则开辟一个新结点，赋予其一个新的编号</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-variable">son</span>[<span class="cm-variable">p</span>][<span class="cm-variable">u</span>] <span class="cm-operator">=</span> <span class="cm-operator">++</span><span class="cm-variable">idx</span>, <span class="cm-variable">flag1</span> <span class="cm-operator">=</span> <span class="cm-atom">true</span>,<span class="cm-variable">pre</span>[<span class="cm-variable">idx</span>]<span class="cm-operator">=</span><span class="cm-variable">p</span>;<span class="cm-comment">//新的结点</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-variable">p</span> <span class="cm-operator">=</span> <span class="cm-variable">son</span>[<span class="cm-variable">p</span>][<span class="cm-variable">u</span>];<span class="cm-comment">//走到子节点</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-keyword">if</span> (<span class="cm-variable">cnt</span>[<span class="cm-variable">p</span>] <span class="cm-operator">&gt;</span> <span class="cm-number">0</span>) <span class="cm-variable">flag2</span> <span class="cm-operator">=</span> <span class="cm-atom">true</span>;</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span>}</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-variable">cnt</span>[<span class="cm-variable">p</span>]<span class="cm-operator">++</span>;<span class="cm-comment">//一个字符串走完后，在最后一个结点上做标记，说明这里有个字符串</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp;<span class="cm-keyword">while</span> (<span class="cm-variable">p</span><span class="cm-operator">!=</span><span class="cm-number">0</span>)</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span>{</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-variable">sum</span>[<span class="cm-variable">p</span>] <span class="cm-operator">=</span> <span class="cm-variable">cnt</span>[<span class="cm-variable">p</span>] <span class="cm-operator">+</span> <span class="cm-variable">sum</span>[<span class="cm-variable">son</span>[<span class="cm-variable">p</span>][<span class="cm-number">0</span>]] <span class="cm-operator">+</span> <span class="cm-variable">sum</span>[<span class="cm-variable">son</span>[<span class="cm-variable">p</span>][<span class="cm-number">1</span>]];<span class="cm-comment">//统计有多少字符串将p字符串作为前驱</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-variable">p</span> <span class="cm-operator">=</span> <span class="cm-variable">pre</span>[<span class="cm-variable">p</span>];</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span>}</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-keyword">if</span> (<span class="cm-variable">flag2</span> <span class="cm-operator">==</span> <span class="cm-atom">true</span> <span class="cm-operator">||</span> <span class="cm-variable">flag1</span> <span class="cm-operator">==</span> <span class="cm-atom">false</span>)</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-keyword">return</span> <span class="cm-atom">true</span>;</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-keyword">else</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-keyword">return</span> <span class="cm-atom">false</span>;</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;">}</span></pre>
+	</div>
+	</div>
+	</div>
+	</div>
+	</div>
+	<div style="position: absolute; height: 0px; width: 1px; border-bottom: 0px solid transparent; top: 784px;"></div>
+	<div class="CodeMirror-gutters" style="display: none; height: 784px;"></div>
+	</div>
+	</div>
+	</pre>
+	<p><span>查询：</span></p>
+	<pre class="md-fences md-end-block ty-contain-cm modeLoaded" spellcheck="false" lang="c++"
+		style="break-inside: unset;"><div class="CodeMirror cm-s-inner cm-s-null-scroll CodeMirror-wrap" lang="c++"><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 9.19995px; left: 8px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; bottom: -1em; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 0px; margin-bottom: 0px; border-right-width: 0px; padding-right: 0px; padding-bottom: 0px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines" role="presentation"><div role="presentation" style="position: relative; outline: none;"><div class="CodeMirror-measure"><pre><span>xxxxxxxxxx</span></pre>
+	</div>
+	<div class="CodeMirror-measure"></div>
+	<div style="position: relative; z-index: 1;"></div>
+	<div class="CodeMirror-code" role="presentation" style="">
+		<div class="CodeMirror-activeline" style="position: relative;">
+			<div class="CodeMirror-activeline-background CodeMirror-linebackground"></div>
+			<div class="CodeMirror-gutter-background CodeMirror-activeline-gutter" style="left: 0px; width: 0px;"></div>
+			<pre class=" CodeMirror-line "
+				role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-variable-3">int</span> <span class="cm-def">query</span>(<span class="cm-variable-3">int</span> <span class="cm-variable">l</span>)<span class="cm-comment">//查询过程和插入类似，都要在树中走一般，只是不会改变数的结构</span></span></pre>
+		</div>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;">{</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-variable-3">int</span> <span class="cm-variable">p</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>;</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-variable">ll</span> <span class="cm-variable">ans</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>;</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-variable">rep</span>(<span class="cm-variable">i</span>, <span class="cm-number">1</span>, <span class="cm-variable">l</span>)</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span>{</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-variable-3">int</span> <span class="cm-variable">u</span> <span class="cm-operator">=</span> <span class="cm-variable">s</span>[<span class="cm-variable">i</span>];</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-keyword">if</span> (<span class="cm-variable">son</span>[<span class="cm-variable">p</span>][<span class="cm-variable">u</span>] <span class="cm-operator">==</span> <span class="cm-number">0</span>) <span class="cm-keyword">return</span> <span class="cm-variable">ans</span>;</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-variable">p</span> <span class="cm-operator">=</span> <span class="cm-variable">son</span>[<span class="cm-variable">p</span>][<span class="cm-variable">u</span>];</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-variable">ans</span> <span class="cm-operator">+=</span> <span class="cm-variable">cnt</span>[<span class="cm-variable">p</span>];</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span>}</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-variable">ans</span> <span class="cm-operator">+=</span> <span class="cm-variable">sum</span>[<span class="cm-variable">p</span>]<span class="cm-operator">-</span><span class="cm-variable">cnt</span>[<span class="cm-variable">p</span>];</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-keyword">return</span> <span class="cm-variable">ans</span>;</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;">}</span></pre>
+	</div>
+	</div>
+	</div>
+	</div>
+	</div>
+	<div style="position: absolute; height: 0px; width: 1px; border-bottom: 0px solid transparent; top: 336px;"></div>
+	<div class="CodeMirror-gutters" style="display: none; height: 336px;"></div>
+	</div>
+	</div>
+	</pre>
+	<h2 id='kmp和ac自动机'><span>kmp和AC自动机</span></h2>
+	<p><span>kmp算法用于文本串和模式串的匹配。先对模式串进行预处理，找出各个长度的最长公共前后缀，将后缀的起始位置存入数组ne中，这其实也是加速匹配的基础。在模式串与文本串匹配的过程中已经匹配成功的长度为len，那么如果第len+1位匹配失败，则将模式串向前移动，使得当前长度的前缀移动至与后缀平齐也就是j=ne[j]，这样新进行匹配的长度就为前缀的长度，在此基础上继续匹配下一位。</span>
 	</p>
-	<p>kmp的模板如下</p>
-	<pre><code class='language-c++' lang='c++'>#include&lt;cstdio&gt;
-#include&lt;iostream&gt;
-#include&lt;math.h&gt;
-#include&lt;algorithm&gt;
-#include&lt;cstring&gt;
-#include&lt;unordered_map&gt;
-#include&lt;string&gt;
-#include&lt;queue&gt;
-#include&lt;map&gt;
-#include&lt;ctime&gt;
-#include&lt;limits.h&gt;
-#include &lt;stack&gt;
-#include&lt;set&gt;
-#include&lt;iomanip&gt;
-#define ll long long
-#pragma warning(disable : 4996)
-using namespace std;
-#define rep(l,a,b) for(ll l=a;l&lt;=b;l++)
-#define repp(l,a,b) for(ll l=a;l&gt;=b;l--)
-#define mem(x) memset(x,0,sizeof(x))
-#define fr fast_IO::read()
-#define INF 0x3f3f3f3f
-#define ull unsigned long long
-#define int long long
-namespace fast_IO {
-	ll read() {
-		ll num = 0;
-		char c;
-		bool tag = false;
-		while ((c = getchar()) != &#39;-&#39; &amp;&amp; c != &#39;+&#39; &amp;&amp; (c &lt; &#39;0&#39; || c &gt; &#39;9&#39;) &amp;&amp; ~c);
-		if (!~c)return EOF;
-		if (c == &#39;-&#39;)tag = true;
-		else if (c == &#39;+&#39;)tag = false;
-		else num = c ^ 48;
-		while ((c = getchar()) &gt;= &#39;0&#39; &amp;&amp; c &lt;= &#39;9&#39;)
-			num = (num &lt;&lt; 1) + (num &lt;&lt; 3) + (c ^ 48);
-		if (tag)return -num;
-		return num;
-	}
-}
-const ll mod = 999983;
-#define N 3000001
-int ne[N];
-signed main()
-{
-	//freopen(&quot;in.txt&quot;, &quot;r&quot;, stdin);
-	string s1, s2;
-	cin &gt;&gt; s1 &gt;&gt; s2;
-	s1 = &#39; &#39; + s1;
-	s2 = &#39; &#39; + s2;
-	ll n = s1.length() - 1;
-	ll m = s2.length() - 1;
-	for (int i = 2, j = 0; i &lt;= m; i++)//因为ne[1]=0所以之间从2开始，i为文本串的下标，j为模式串的下标（长度）
-	{
-		while (j &amp;&amp; s2[j + 1] != s2[i]) j = ne[j];//如果下一位不匹配，则更新为当前长度最长的公共前后缀长度，直到匹配为止
-		if (s2[j + 1] == s2[i]) j++;//跳到这里说明下一位是匹配的，则长度加一
-		ne[i] = j;//长度为i时，转移到长度为j可以继续进行匹配
-	}
-	for (int i = 1, j = 0; i &lt;= n; i++)//下标从1开始
-	{
-		while (j &amp;&amp; s2[j + 1] != s1[i]) j = ne[j];//如果下一位不匹配，则更新为当前长度最长的公共前后缀长度，直到匹配为止
-		if (s2[j + 1] == s1[i]) j++;//跳到这里说明下一位是匹配的，则长度加一
-		if (j == m)//如果此时模式串已经完全匹配
-		{
-			j = ne[j];//转移到下一个位置继续
-			cout &lt;&lt; i-m+1&lt;&lt; &quot;\n&quot;;//输出信息，i是最后一个字符断点下标，m为长度，i-m+1即为起始坐标。
-		}
-	}
-	rep(i, 1, m)
-		cout &lt;&lt; ne[i] &lt;&lt; &quot; &quot;;
-	cout &lt;&lt; endl;
-}
-</code></pre>
-	<p>在进行j=ne[j]时，更新前后的值都是当前长度的公共前后缀，想要知道数量，可以在求解ne数组时，让ans[i]=ans[j]+1。需要统计其他信息时，可以让自己和自己匹配，将（j==m）部分替换即可。</p>
-	<p>AC自动机是用于多个模式串和同一个文本串匹配的算法，同时也是一个可以扩展的数据结构，可以理解成是kmp和trie树的结合（虽然我还是不太懂QWQ）。</p>
-	<h2 id='倍增'>倍增</h2>
-	<p>倍增是加速模拟的一种算法，相当于对距离进行二进制分解，然后每次以2^k的距离接近目标使得其能达到加速的效果。最典型的应用有st表和lca（最近公共祖先）。</p>
-	<h3 id='st表'>ST表</h3>
-	<p>st表是为了求区间的最大值或者最小值。每次求一个区间时，就去求长度为1，2，4，8，……，2^k的区间最大值，而这些区间最大值可以通过预处理递推得到。st[i]
-		[j]用来表示起点为i长度为2^j的区间最大值，对于任意一个i（当然，i+j-1&lt;=n)</p>
+	<p><span>kmp的模板如下</span></p>
+	<pre class="md-fences md-end-block ty-contain-cm modeLoaded" spellcheck="false" lang="c++"
+		style="break-inside: unset;"><div class="CodeMirror cm-s-inner cm-s-null-scroll CodeMirror-wrap" lang="c++"><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 9.2px; left: 8px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; bottom: -1em; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 0px; margin-bottom: 0px; border-right-width: 0px; padding-right: 0px; padding-bottom: 0px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines" role="presentation"><div role="presentation" style="position: relative; outline: none;"><div class="CodeMirror-measure"><pre><span>xxxxxxxxxx</span></pre>
+	</div>
+	<div class="CodeMirror-measure"></div>
+	<div style="position: relative; z-index: 1;"></div>
+	<div class="CodeMirror-code" role="presentation" style="">
+		<div class="CodeMirror-activeline" style="position: relative;">
+			<div class="CodeMirror-activeline-background CodeMirror-linebackground"></div>
+			<div class="CodeMirror-gutter-background CodeMirror-activeline-gutter" style="left: 0px; width: 0px;"></div>
+			<pre class=" CodeMirror-line "
+				role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-meta">#include&lt;cstdio&gt;</span></span></pre>
+		</div>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-meta">#include&lt;iostream&gt;</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-meta">#include&lt;math.h&gt;</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-meta">#include&lt;algorithm&gt;</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-meta">#include&lt;cstring&gt;</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-meta">#include&lt;unordered_map&gt;</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-meta">#include&lt;string&gt;</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-meta">#include&lt;queue&gt;</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-meta">#include&lt;map&gt;</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-meta">#include&lt;ctime&gt;</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-meta">#include&lt;limits.h&gt;</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-meta">#include &lt;stack&gt;</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-meta">#include&lt;set&gt;</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-meta">#include&lt;iomanip&gt;</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-meta">#define ll long long</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-meta">#pragma warning(disable : 4996)</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-keyword">using</span> <span class="cm-keyword">namespace</span> <span class="cm-def">std</span>;</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-meta">#define rep(l,a,b) for(ll l=a;l&lt;=b;l++)</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-meta">#define repp(l,a,b) for(ll l=a;l&gt;=b;l--)</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-meta">#define mem(x) memset(x,0,sizeof(x))</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-meta">#define fr fast_IO::read()</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-meta">#define INF 0x3f3f3f3f</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-meta">#define ull unsigned long long</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-meta">#define int long long</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-keyword">namespace</span> <span class="cm-def">fast_IO</span> {</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-variable">ll</span> <span class="cm-def">read</span>() {</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-variable">ll</span> <span class="cm-variable">num</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>;</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-variable-3">char</span> <span class="cm-variable">c</span>;</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-variable-3">bool</span> <span class="cm-variable">tag</span> <span class="cm-operator">=</span> <span class="cm-atom">false</span>;</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-keyword">while</span> ((<span class="cm-variable">c</span> <span class="cm-operator">=</span> <span class="cm-variable">getchar</span>()) <span class="cm-operator">!=</span> <span class="cm-string">'-'</span> <span class="cm-operator">&amp;&amp;</span> <span class="cm-variable">c</span> <span class="cm-operator">!=</span> <span class="cm-string">'+'</span> <span class="cm-operator">&amp;&amp;</span> (<span class="cm-variable">c</span> <span class="cm-operator">&lt;</span> <span class="cm-string">'0'</span> <span class="cm-operator">||</span> <span class="cm-variable">c</span> <span class="cm-operator">&gt;</span> <span class="cm-string">'9'</span>) <span class="cm-operator">&amp;&amp;</span> <span class="cm-variable">~c</span>);</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-keyword">if</span> (<span class="cm-operator">!</span><span class="cm-variable">~c</span>)<span class="cm-keyword">return</span> <span class="cm-variable">EOF</span>;</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-keyword">if</span> (<span class="cm-variable">c</span> <span class="cm-operator">==</span> <span class="cm-string">'-'</span>)<span class="cm-variable">tag</span> <span class="cm-operator">=</span> <span class="cm-atom">true</span>;</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-keyword">else</span> <span class="cm-keyword">if</span> (<span class="cm-variable">c</span> <span class="cm-operator">==</span> <span class="cm-string">'+'</span>)<span class="cm-variable">tag</span> <span class="cm-operator">=</span> <span class="cm-atom">false</span>;</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-keyword">else</span> <span class="cm-variable">num</span> <span class="cm-operator">=</span> <span class="cm-variable">c</span> <span class="cm-variable">^</span> <span class="cm-number">48</span>;</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-keyword">while</span> ((<span class="cm-variable">c</span> <span class="cm-operator">=</span> <span class="cm-variable">getchar</span>()) <span class="cm-operator">&gt;=</span> <span class="cm-string">'0'</span> <span class="cm-operator">&amp;&amp;</span> <span class="cm-variable">c</span> <span class="cm-operator">&lt;=</span> <span class="cm-string">'9'</span>)</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-variable">num</span> <span class="cm-operator">=</span> (<span class="cm-variable">num</span> <span class="cm-operator">&lt;&lt;</span> <span class="cm-number">1</span>) <span class="cm-operator">+</span> (<span class="cm-variable">num</span> <span class="cm-operator">&lt;&lt;</span> <span class="cm-number">3</span>) <span class="cm-operator">+</span> (<span class="cm-variable">c</span> <span class="cm-variable">^</span> <span class="cm-number">48</span>);</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-keyword">if</span> (<span class="cm-variable">tag</span>)<span class="cm-keyword">return</span> <span class="cm-operator">-</span><span class="cm-variable">num</span>;</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-keyword">return</span> <span class="cm-variable">num</span>;</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span>}</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;">}</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-keyword">const</span> <span class="cm-variable">ll</span> <span class="cm-variable">mod</span> <span class="cm-operator">=</span> <span class="cm-number">999983</span>;</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-meta">#define N 3000001</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-variable-3">int</span> <span class="cm-variable">ne</span>[<span class="cm-variable">N</span>];</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-variable-3">signed</span> <span class="cm-def">main</span>()</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;">{</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-comment">//freopen("in.txt", "r", stdin);</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-variable">string</span> <span class="cm-variable">s1</span>, <span class="cm-variable">s2</span>;</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-variable">cin</span> <span class="cm-operator">&gt;&gt;</span> <span class="cm-variable">s1</span> <span class="cm-operator">&gt;&gt;</span> <span class="cm-variable">s2</span>;</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-variable">s1</span> <span class="cm-operator">=</span> <span class="cm-string">' '</span> <span class="cm-operator">+</span> <span class="cm-variable">s1</span>;</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-variable">s2</span> <span class="cm-operator">=</span> <span class="cm-string">' '</span> <span class="cm-operator">+</span> <span class="cm-variable">s2</span>;</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-variable">ll</span> <span class="cm-variable">n</span> <span class="cm-operator">=</span> <span class="cm-variable">s1</span>.<span class="cm-variable">length</span>() <span class="cm-operator">-</span> <span class="cm-number">1</span>;</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-variable">ll</span> <span class="cm-variable">m</span> <span class="cm-operator">=</span> <span class="cm-variable">s2</span>.<span class="cm-variable">length</span>() <span class="cm-operator">-</span> <span class="cm-number">1</span>;</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-keyword">for</span> (<span class="cm-variable-3">int</span> <span class="cm-variable">i</span> <span class="cm-operator">=</span> <span class="cm-number">2</span>, <span class="cm-variable">j</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>; <span class="cm-variable">i</span> <span class="cm-operator">&lt;=</span> <span class="cm-variable">m</span>; <span class="cm-variable">i</span><span class="cm-operator">++</span>)<span class="cm-comment">//因为ne[1]=0所以之间从2开始，i为文本串的下标，j为模式串的下标（长度）</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span>{</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-keyword">while</span> (<span class="cm-variable">j</span> <span class="cm-operator">&amp;&amp;</span> <span class="cm-variable">s2</span>[<span class="cm-variable">j</span> <span class="cm-operator">+</span> <span class="cm-number">1</span>] <span class="cm-operator">!=</span> <span class="cm-variable">s2</span>[<span class="cm-variable">i</span>]) <span class="cm-variable">j</span> <span class="cm-operator">=</span> <span class="cm-variable">ne</span>[<span class="cm-variable">j</span>];<span class="cm-comment">//如果下一位不匹配，则更新为当前长度最长的公共前后缀长度，直到匹配为止</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-keyword">if</span> (<span class="cm-variable">s2</span>[<span class="cm-variable">j</span> <span class="cm-operator">+</span> <span class="cm-number">1</span>] <span class="cm-operator">==</span> <span class="cm-variable">s2</span>[<span class="cm-variable">i</span>]) <span class="cm-variable">j</span><span class="cm-operator">++</span>;<span class="cm-comment">//跳到这里说明下一位是匹配的，则长度加一</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-variable">ne</span>[<span class="cm-variable">i</span>] <span class="cm-operator">=</span> <span class="cm-variable">j</span>;<span class="cm-comment">//长度为i时，转移到长度为j可以继续进行匹配</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span>}</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-keyword">for</span> (<span class="cm-variable-3">int</span> <span class="cm-variable">i</span> <span class="cm-operator">=</span> <span class="cm-number">1</span>, <span class="cm-variable">j</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>; <span class="cm-variable">i</span> <span class="cm-operator">&lt;=</span> <span class="cm-variable">n</span>; <span class="cm-variable">i</span><span class="cm-operator">++</span>)<span class="cm-comment">//下标从1开始</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span>{</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-keyword">while</span> (<span class="cm-variable">j</span> <span class="cm-operator">&amp;&amp;</span> <span class="cm-variable">s2</span>[<span class="cm-variable">j</span> <span class="cm-operator">+</span> <span class="cm-number">1</span>] <span class="cm-operator">!=</span> <span class="cm-variable">s1</span>[<span class="cm-variable">i</span>]) <span class="cm-variable">j</span> <span class="cm-operator">=</span> <span class="cm-variable">ne</span>[<span class="cm-variable">j</span>];<span class="cm-comment">//如果下一位不匹配，则更新为当前长度最长的公共前后缀长度，直到匹配为止</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-keyword">if</span> (<span class="cm-variable">s2</span>[<span class="cm-variable">j</span> <span class="cm-operator">+</span> <span class="cm-number">1</span>] <span class="cm-operator">==</span> <span class="cm-variable">s1</span>[<span class="cm-variable">i</span>]) <span class="cm-variable">j</span><span class="cm-operator">++</span>;<span class="cm-comment">//跳到这里说明下一位是匹配的，则长度加一</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-keyword">if</span> (<span class="cm-variable">j</span> <span class="cm-operator">==</span> <span class="cm-variable">m</span>)<span class="cm-comment">//如果此时模式串已经完全匹配</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span>{</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-variable">j</span> <span class="cm-operator">=</span> <span class="cm-variable">ne</span>[<span class="cm-variable">j</span>];<span class="cm-comment">//转移到下一个位置继续</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-variable">cout</span> <span class="cm-operator">&lt;&lt;</span> <span class="cm-variable">i</span><span class="cm-operator">-</span><span class="cm-variable">m</span><span class="cm-operator">+</span><span class="cm-number">1</span><span class="cm-operator">&lt;&lt;</span> <span class="cm-string">"\n"</span>;<span class="cm-comment">//输出信息，i是最后一个字符断点下标，m为长度，i-m+1即为起始坐标。</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span>}</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span>}</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-variable">rep</span>(<span class="cm-variable">i</span>, <span class="cm-number">1</span>, <span class="cm-variable">m</span>)</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-variable">cout</span> <span class="cm-operator">&lt;&lt;</span> <span class="cm-variable">ne</span>[<span class="cm-variable">i</span>] <span class="cm-operator">&lt;&lt;</span> <span class="cm-string">" "</span>;</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-variable">cout</span> <span class="cm-operator">&lt;&lt;</span> <span class="cm-variable">endl</span>;</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;">}</span></pre>
+	</div>
+	</div>
+	</div>
+	</div>
+	</div>
+	<div style="position: absolute; height: 0px; width: 1px; border-bottom: 0px solid transparent; top: 1926px;"></div>
+	<div class="CodeMirror-gutters" style="display: none; height: 1926px;"></div>
+	</div>
+	</div>
+	</pre>
+	<p><span>在进行j=ne[j]时，更新前后的值都是当前长度的公共前后缀，想要知道数量，可以在求解ne数组时，让ans[i]=ans[j]+1。需要统计其他信息时，可以让自己和自己匹配，将（j==m）部分替换即可。</span>
+	</p>
+	<p><span>AC自动机是用于多个模式串和同一个文本串匹配的算法，同时也是一个可以扩展的数据结构，可以理解成是kmp和trie树的结合（虽然我还是不太懂QWQ）。</span></p>
+	<h2 id='倍增'><span>倍增</span></h2>
+	<p><span>倍增是加速模拟的一种算法，相当于对距离进行二进制分解，然后每次以2^k的距离接近目标使得其能达到加速的效果。最典型的应用有st表和lca（最近公共祖先）。</span></p>
+	<h3 id='st表'><span>ST表</span></h3>
+	<p><span>st表是为了求区间的最大值或者最小值。每次求一个区间时，就去求长度为1，2，4，8，……，2^k的区间最大值，而这些区间最大值可以通过预处理递推得到。st[i]
+			[j]用来表示起点为i长度为2^j的区间最大值，对于任意一个i（当然，i+j-1&lt;=n)</span></p>
 	<div contenteditable="false" spellcheck="false" class="mathjax-block md-end-block md-math-block md-rawblock"
 		id="mathjax-n37" cid="n37" mdtype="math_block" data-math-tag-before="0" data-math-tag-after="0"
 		data-math-labels="[]">
@@ -463,32 +865,124 @@ signed main()
 							</g>
 						</g>
 					</g>
-				</svg></mjx-container>
+				</svg>
+				<mjx-assistive-mml unselectable="on" display="block"><math xmlns="http://www.w3.org/1998/Math/MathML"
+						display="block">
+						<mi>s</mi>
+						<mi>t</mi>
+						<mo stretchy="false">[</mo>
+						<mi>i</mi>
+						<mo stretchy="false">]</mo>
+						<mo stretchy="false">[</mo>
+						<mi>j</mi>
+						<mo stretchy="false">]</mo>
+						<mo>=</mo>
+						<mi>m</mi>
+						<mi>a</mi>
+						<mi>x</mi>
+						<mo stretchy="false">(</mo>
+						<mi>s</mi>
+						<mi>t</mi>
+						<mo stretchy="false">[</mo>
+						<mi>i</mi>
+						<mo stretchy="false">]</mo>
+						<mo stretchy="false">[</mo>
+						<mi>j</mi>
+						<mo>−</mo>
+						<mn>1</mn>
+						<mo stretchy="false">]</mo>
+						<mo>,</mo>
+						<mi>s</mi>
+						<mi>t</mi>
+						<mo stretchy="false">[</mo>
+						<mi>i</mi>
+						<mo>+</mo>
+						<mi>j</mi>
+						<mo stretchy="false">]</mo>
+						<mo stretchy="false">[</mo>
+						<mi>j</mi>
+						<mo>−</mo>
+						<mn>1</mn>
+						<mo stretchy="false">]</mo>
+						<mo stretchy="false">)</mo>
+					</math></mjx-assistive-mml>
+			</mjx-container>
 		</div>
 	</div>
-	<p>意思是将长度为2^j的区间分成两个2^(j-1)的区间，然后分别求解。然后对于每一个区间的最大值st[i]
-		[j]，可以取一个长度大于j/2的（也就是第一个小于j的）整数2^t（这个t也就是log2(j)向下取整，也可以预处理出来）然后分成左右两个区间进行求解，因为需要用到的区间（长度为1，2，4，8，……，2^k）已经提前预处理出来了，所以求解会很快，只需要O(1)的复杂度。求解时两个2^t区间会有重叠，但是不会影响我们求最值。（2^k在代码中用1&lt;&lt;k来表示）
+	<p><span>意思是将长度为2^j的区间分成两个2^(j-1)的区间，然后分别求解。然后对于每一个区间的最大值st[i]
+			[j]，可以取一个长度大于j/2的（也就是第一个小于j的）整数2^t（这个t也就是log2(j)向下取整，也可以预处理出来）然后分成左右两个区间进行求解，因为需要用到的区间（长度为1，2，4，8，……，2^k）已经提前预处理出来了，所以求解会很快，只需要O(1)的复杂度。求解时两个2^t区间会有重叠，但是不会影响我们求最值。（2^k在代码中用1&lt;&lt;k来表示）</span>
 	</p>
-	<pre><code class='language-c++' lang='c++'>rep(i, 1, n)
-		st[i][0] = fr;//长度为2^0，也就是只有它本身
-	rep(i, 2, n)
-		lg[i] = lg[i &gt;&gt; 1] + 1;//预处理所有的log2（i）
-	rep(j, 1, lg[n])//预处理所有的区间长度为2^i的最值
-		for (ll i = 1; i + (1 &lt;&lt; j) - 1 &lt;= n; i++)
-			st[i][j] = max(st[i][j - 1], st[i + (1 &lt;&lt; (j - 1))][j - 1]);
-</code></pre>
-	<p>然后查询也很容易：</p>
-	<pre><code class='language-c++' lang='c++'>int query(int l, int r)
-{
-	int x = lg[r - l];
-	return max(st[l][x], st[r - (1 &lt;&lt; x)+1][x]);
-}
-</code></pre>
-	<p>通过st表我们发现，其实倍增用到了分治的思想，巧妙地利用了2^k的相互关系，将他们作为子问题预处理出来，在具体问题求解时，化零为整，求得答案。当问题在2^k上有独特性质时，也可以用到st表的思想。</p>
-	<h3 id='lca最近公共祖先）'>lca（最近公共祖先）</h3>
-	<p>st表是区间上的性质，而lca是树上加速模拟的方法，在树上寻找两个结点的最短路径也是求最近公共祖先。求解最近公共祖先首先要将深度较高的结点移动与另一个结点深度相同的位置，然后两个结点一起移动，直到找到最近公共祖先。这里如果一步一步地移动，显然太慢了，于是我们想到如何能一次移动2^k步，第一步要移动至与另一个结点深度相同的位置，我们可以将他们的深度差设为h，对h进行二进制分解可以得到诸如110011……的式子，当它为1的时候我就移动2^k步,这样就只需要走log2（h）步就能到达，而第二步也是同理，如果2^k太大了，就判断2^(k-1)，还是太大了就判断2^(k-2)步直到2^0步。而每一个结点的第2^k父亲和深度可以通过dfs从根节点跑一遍得到。
+	<pre class="md-fences md-end-block ty-contain-cm modeLoaded" spellcheck="false"
+		lang="c++"><div class="CodeMirror cm-s-inner cm-s-null-scroll CodeMirror-wrap" lang="c++"><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 9.2px; left: 8px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; bottom: -1em; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 0px; margin-bottom: 0px; border-right-width: 0px; padding-right: 0px; padding-bottom: 0px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines" role="presentation"><div role="presentation" style="position: relative; outline: none;"><div class="CodeMirror-measure"><pre><span>xxxxxxxxxx</span></pre>
+	</div>
+	<div class="CodeMirror-measure"></div>
+	<div style="position: relative; z-index: 1;"></div>
+	<div class="CodeMirror-code" role="presentation" style="">
+		<div class="CodeMirror-activeline" style="position: relative;">
+			<div class="CodeMirror-activeline-background CodeMirror-linebackground"></div>
+			<div class="CodeMirror-gutter-background CodeMirror-activeline-gutter" style="left: 0px; width: 0px;"></div>
+			<pre class=" CodeMirror-line "
+				role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-variable">rep</span>(<span class="cm-variable">i</span>, <span class="cm-number">1</span>, <span class="cm-variable">n</span>)</span></pre>
+		</div>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-variable">st</span>[<span class="cm-variable">i</span>][<span class="cm-number">0</span>] <span class="cm-operator">=</span> <span class="cm-variable">fr</span>;<span class="cm-comment">//长度为2^0，也就是只有它本身</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-variable">rep</span>(<span class="cm-variable">i</span>, <span class="cm-number">2</span>, <span class="cm-variable">n</span>)</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-variable">lg</span>[<span class="cm-variable">i</span>] <span class="cm-operator">=</span> <span class="cm-variable">lg</span>[<span class="cm-variable">i</span> <span class="cm-operator">&gt;&gt;</span> <span class="cm-number">1</span>] <span class="cm-operator">+</span> <span class="cm-number">1</span>;<span class="cm-comment">//预处理所有的log2（i）</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-variable">rep</span>(<span class="cm-variable">j</span>, <span class="cm-number">1</span>, <span class="cm-variable">lg</span>[<span class="cm-variable">n</span>])<span class="cm-comment">//预处理所有的区间长度为2^i的最值</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-keyword">for</span> (<span class="cm-variable">ll</span> <span class="cm-variable">i</span> <span class="cm-operator">=</span> <span class="cm-number">1</span>; <span class="cm-variable">i</span> <span class="cm-operator">+</span> (<span class="cm-number">1</span> <span class="cm-operator">&lt;&lt;</span> <span class="cm-variable">j</span>) <span class="cm-operator">-</span> <span class="cm-number">1</span> <span class="cm-operator">&lt;=</span> <span class="cm-variable">n</span>; <span class="cm-variable">i</span><span class="cm-operator">++</span>)</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-variable">st</span>[<span class="cm-variable">i</span>][<span class="cm-variable">j</span>] <span class="cm-operator">=</span> <span class="cm-variable">max</span>(<span class="cm-variable">st</span>[<span class="cm-variable">i</span>][<span class="cm-variable">j</span> <span class="cm-operator">-</span> <span class="cm-number">1</span>], <span class="cm-variable">st</span>[<span class="cm-variable">i</span> <span class="cm-operator">+</span> (<span class="cm-number">1</span> <span class="cm-operator">&lt;&lt;</span> (<span class="cm-variable">j</span> <span class="cm-operator">-</span> <span class="cm-number">1</span>))][<span class="cm-variable">j</span> <span class="cm-operator">-</span> <span class="cm-number">1</span>]);</span></pre>
+	</div>
+	</div>
+	</div>
+	</div>
+	</div>
+	<div style="position: absolute; height: 0px; width: 1px; border-bottom: 0px solid transparent; top: 224px;"></div>
+	<div class="CodeMirror-gutters" style="display: none; height: 224px;"></div>
+	</div>
+	</div>
+	</pre>
+	<p><span>然后查询也很容易：</span></p>
+	<pre class="md-fences md-end-block ty-contain-cm modeLoaded" spellcheck="false"
+		lang="c++"><div class="CodeMirror cm-s-inner cm-s-null-scroll CodeMirror-wrap" lang="c++"><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 9.2px; left: 8px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; bottom: -1em; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 0px; margin-bottom: 0px; border-right-width: 0px; padding-right: 0px; padding-bottom: 0px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines" role="presentation"><div role="presentation" style="position: relative; outline: none;"><div class="CodeMirror-measure"><pre><span>xxxxxxxxxx</span></pre>
+	</div>
+	<div class="CodeMirror-measure"></div>
+	<div style="position: relative; z-index: 1;"></div>
+	<div class="CodeMirror-code" role="presentation" style="">
+		<div class="CodeMirror-activeline" style="position: relative;">
+			<div class="CodeMirror-activeline-background CodeMirror-linebackground"></div>
+			<div class="CodeMirror-gutter-background CodeMirror-activeline-gutter" style="left: 0px; width: 0px;"></div>
+			<pre class=" CodeMirror-line "
+				role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-variable-3">int</span> <span class="cm-def">query</span>(<span class="cm-variable-3">int</span> <span class="cm-variable">l</span>, <span class="cm-variable-3">int</span> <span class="cm-variable">r</span>)</span></pre>
+		</div>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;">{</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-variable-3">int</span> <span class="cm-variable">x</span> <span class="cm-operator">=</span> <span class="cm-variable">lg</span>[<span class="cm-variable">r</span> <span class="cm-operator">-</span> <span class="cm-variable">l</span>];</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-keyword">return</span> <span class="cm-variable">max</span>(<span class="cm-variable">st</span>[<span class="cm-variable">l</span>][<span class="cm-variable">x</span>], <span class="cm-variable">st</span>[<span class="cm-variable">r</span> <span class="cm-operator">-</span> (<span class="cm-number">1</span> <span class="cm-operator">&lt;&lt;</span> <span class="cm-variable">x</span>)<span class="cm-operator">+</span><span class="cm-number">1</span>][<span class="cm-variable">x</span>]);</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;">}</span></pre>
+	</div>
+	</div>
+	</div>
+	</div>
+	</div>
+	<div style="position: absolute; height: 0px; width: 1px; border-bottom: 0px solid transparent; top: 112px;"></div>
+	<div class="CodeMirror-gutters" style="display: none; height: 112px;"></div>
+	</div>
+	</div>
+	</pre>
+	<p><span>通过st表我们发现，其实倍增用到了分治的思想，巧妙地利用了2^k的相互关系，将他们作为子问题预处理出来，在具体问题求解时，化零为整，求得答案。当问题在2^k上有独特性质时，也可以用到st表的思想。</span>
 	</p>
-	<p>预处理时也同样用到了lca中2^k的独特性质</p>
+	<h3 id='lca最近公共祖先）'><span>lca（最近公共祖先）</span></h3>
+	<p><span>st表是区间上的性质，而lca是树上加速模拟的方法，在树上寻找两个结点的最短路径也是求最近公共祖先。求解最近公共祖先首先要将深度较高的结点移动与另一个结点深度相同的位置，然后两个结点一起移动，直到找到最近公共祖先。这里如果一步一步地移动，显然太慢了，于是我们想到如何能一次移动2^k步，第一步要移动至与另一个结点深度相同的位置，我们可以将他们的深度差设为h，对h进行二进制分解可以得到诸如110011……的式子，当它为1的时候我就移动2^k步,这样就只需要走log2（h）步就能到达，而第二步也是同理，如果2^k太大了，就判断2^(k-1)，还是太大了就判断2^(k-2)步直到2^0步。而每一个结点的第2^k父亲和深度可以通过dfs从根节点跑一遍得到。</span>
+	</p>
+	<p><span>预处理时也同样用到了lca中2^k的独特性质</span></p>
 	<div contenteditable="false" spellcheck="false" class="mathjax-block md-end-block md-math-block md-rawblock"
 		id="mathjax-n46" cid="n46" mdtype="math_block" data-math-tag-before="0" data-math-tag-after="0"
 		data-math-labels="[]">
@@ -597,10 +1091,39 @@ signed main()
 							</g>
 						</g>
 					</g>
-				</svg></mjx-container>
+				</svg>
+				<mjx-assistive-mml unselectable="on" display="block"><math xmlns="http://www.w3.org/1998/Math/MathML"
+						display="block">
+						<mi>f</mi>
+						<mo stretchy="false">[</mo>
+						<mi>x</mi>
+						<mo stretchy="false">]</mo>
+						<mo stretchy="false">[</mo>
+						<mi>i</mi>
+						<mo stretchy="false">]</mo>
+						<mo>=</mo>
+						<mi>f</mi>
+						<mo stretchy="false">[</mo>
+						<mi>f</mi>
+						<mo stretchy="false">[</mo>
+						<mi>x</mi>
+						<mo stretchy="false">]</mo>
+						<mo stretchy="false">[</mo>
+						<mi>i</mi>
+						<mo>−</mo>
+						<mn>1</mn>
+						<mo stretchy="false">]</mo>
+						<mo stretchy="false">]</mo>
+						<mo stretchy="false">[</mo>
+						<mi>i</mi>
+						<mo>−</mo>
+						<mn>1</mn>
+						<mo stretchy="false">]</mo>
+					</math></mjx-assistive-mml>
+			</mjx-container>
 		</div>
 	</div>
-	<p>意思是x结点的第2^i个父亲，是x结点第2^(i-1)个父亲的第2^(i-1)个父亲。</p>
+	<p><span>意思是x结点的第2^i个父亲，是x结点第2^(i-1)个父亲的第2^(i-1)个父亲。</span></p>
 	<div contenteditable="false" spellcheck="false" class="mathjax-block md-end-block md-math-block md-rawblock"
 		id="mathjax-n48" cid="n48" mdtype="math_block" data-math-tag-before="0" data-math-tag-after="0"
 		data-math-labels="[]">
@@ -745,47 +1268,151 @@ signed main()
 							</g>
 						</g>
 					</g>
-				</svg></mjx-container>
+				</svg>
+				<mjx-assistive-mml unselectable="on" display="block"><math xmlns="http://www.w3.org/1998/Math/MathML"
+						display="block">
+						<mi>g</mi>
+						<mo stretchy="false">[</mo>
+						<mi>x</mi>
+						<mo stretchy="false">]</mo>
+						<mo stretchy="false">[</mo>
+						<mi>i</mi>
+						<mo stretchy="false">]</mo>
+						<mo>=</mo>
+						<mi>g</mi>
+						<mo stretchy="false">[</mo>
+						<mi>x</mi>
+						<mo stretchy="false">]</mo>
+						<mo stretchy="false">[</mo>
+						<mi>i</mi>
+						<mo>−</mo>
+						<mn>1</mn>
+						<mo stretchy="false">]</mo>
+						<mo>+</mo>
+						<mi>g</mi>
+						<mo stretchy="false">[</mo>
+						<mi>f</mi>
+						<mo stretchy="false">[</mo>
+						<mi>x</mi>
+						<mo stretchy="false">]</mo>
+						<mo stretchy="false">[</mo>
+						<mi>i</mi>
+						<mo>−</mo>
+						<mn>1</mn>
+						<mo stretchy="false">]</mo>
+						<mo stretchy="false">]</mo>
+						<mo stretchy="false">[</mo>
+						<mi>i</mi>
+						<mo>−</mo>
+						<mn>1</mn>
+						<mo stretchy="false">]</mo>
+					</math></mjx-assistive-mml>
+			</mjx-container>
 		</div>
 	</div>
-	<p>g[x]
-		[i]代表从x+1个结点累加到x的第2^i个父亲结点的值，不包括x结点本身（因为不包含根节点root），所以这个公式的意思是从x+1个结点累加到x的第2^i个父亲结点的值等于，从x+1个结点累加到x的第2^(i-1)个父亲结点的值加上从x的第2^(i-1)+1个父亲结点累加到x的第2^i个父亲结点的值。
+	<p><span>g[x]
+			[i]代表从x+1个结点累加到x的第2^i个父亲结点的值，不包括x结点本身（因为不包含根节点root），所以这个公式的意思是从x+1个结点累加到x的第2^i个父亲结点的值等于，从x+1个结点累加到x的第2^(i-1)个父亲结点的值加上从x的第2^(i-1)+1个父亲结点累加到x的第2^i个父亲结点的值。</span>
 	</p>
-	<p>dfs预处理：</p>
-	<pre><code class='language-c++' lang='c++'>int dep[N],f[N][32],g[N][32];//dep是深度，f是i的第2^j个父亲结点
-void dfs(int x, int fa)
-{
-	dep[x] = dep[fa] + 1;//子结点是父亲结点深度加一
-	f[x][0] = fa; g[x][0] = c[fa];//x的第2^0个父亲是fa，x的第2^0个父亲的值是fa的值
-	for(ll i=1;(1&lt;&lt;i)&lt;=dep[x];i++)//从足够大的地方开始预处理
-		f[x][i] = f[f[x][i - 1]][i - 1], g[x][i] = g[x][i - 1] + g[f[x][i - 1]][i - 1];
-	for (int i = head[x]; i != -1; i = ne[i])
-	{
-		int v = edges[i];//在树上进行搜索
-		dfs(v, x);
-	}
-}
-</code></pre>
-	<p>求解lca：</p>
-	<pre><code class='language-c++' lang='c++'>int lca(int x, int y)
-{
-	if (dep[x] &lt; dep[y]) swap(x, y);//确保x是深度较大的结点
-	repp(i, 19, 0)
-	{
-		if (dep[fa[x][i]] &gt;= dep[y]) x = fa[x][i];//二进制分解，从高位到低位逐位比较更新，如果更新到第2^i个父亲深度仍然太大则更新，否则就代表已经到达了终点
-	}
-	if (x == y) return x;
-	repp(i, 19, 0)
-	{
-		if (fa[x][i] != fa[y][i]) x = fa[x][i], y = fa[y][i];//两个结点一起更新
-	}
-	return fa[x][0];//得到的答案是x的直接父亲
-}
-</code></pre>
-	<p>于是我们得到了倍增的模板</p>
-	<p>（1）根据题目，暴力地求出每个点的直接跳转位置f[x] [0]，可以考虑用双指针优化</p>
-	<p>（2）用f[i] [j] = f[f[i] [j - 1]] [j - 1]预处理每个跳转的位置</p>
-	<p>（3）用二进制接近法，同时统计答案，公式为：</p>
+	<p><span>dfs预处理：</span></p>
+	<pre class="md-fences md-end-block ty-contain-cm modeLoaded" spellcheck="false"
+		lang="c++"><div class="CodeMirror cm-s-inner cm-s-null-scroll CodeMirror-wrap" lang="c++"><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 9.2002px; left: 8px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; bottom: -1em; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 0px; margin-bottom: 0px; border-right-width: 0px; padding-right: 0px; padding-bottom: 0px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines" role="presentation"><div role="presentation" style="position: relative; outline: none;"><div class="CodeMirror-measure"><pre><span>xxxxxxxxxx</span></pre>
+	</div>
+	<div class="CodeMirror-measure"></div>
+	<div style="position: relative; z-index: 1;"></div>
+	<div class="CodeMirror-code" role="presentation" style="">
+		<div class="CodeMirror-activeline" style="position: relative;">
+			<div class="CodeMirror-activeline-background CodeMirror-linebackground"></div>
+			<div class="CodeMirror-gutter-background CodeMirror-activeline-gutter" style="left: 0px; width: 0px;"></div>
+			<pre class=" CodeMirror-line "
+				role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-variable-3">int</span> <span class="cm-variable">dep</span>[<span class="cm-variable">N</span>],<span class="cm-variable">f</span>[<span class="cm-variable">N</span>][<span class="cm-number">32</span>],<span class="cm-variable">g</span>[<span class="cm-variable">N</span>][<span class="cm-number">32</span>];<span class="cm-comment">//dep是深度，f是i的第2^j个父亲结点</span></span></pre>
+		</div>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-variable-3">void</span> <span class="cm-def">dfs</span>(<span class="cm-variable-3">int</span> <span class="cm-variable">x</span>, <span class="cm-variable-3">int</span> <span class="cm-variable">fa</span>)</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;">{</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-variable">dep</span>[<span class="cm-variable">x</span>] <span class="cm-operator">=</span> <span class="cm-variable">dep</span>[<span class="cm-variable">fa</span>] <span class="cm-operator">+</span> <span class="cm-number">1</span>;<span class="cm-comment">//子结点是父亲结点深度加一</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-variable">f</span>[<span class="cm-variable">x</span>][<span class="cm-number">0</span>] <span class="cm-operator">=</span> <span class="cm-variable">fa</span>; <span class="cm-variable">g</span>[<span class="cm-variable">x</span>][<span class="cm-number">0</span>] <span class="cm-operator">=</span> <span class="cm-variable">c</span>[<span class="cm-variable">fa</span>];<span class="cm-comment">//x的第2^0个父亲是fa，x的第2^0个父亲的值是fa的值</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-keyword">for</span>(<span class="cm-variable">ll</span> <span class="cm-variable">i</span><span class="cm-operator">=</span><span class="cm-number">1</span>;(<span class="cm-number">1</span><span class="cm-operator">&lt;&lt;</span><span class="cm-variable">i</span>)<span class="cm-operator">&lt;=</span><span class="cm-variable">dep</span>[<span class="cm-variable">x</span>];<span class="cm-variable">i</span><span class="cm-operator">++</span>)<span class="cm-comment">//从足够大的地方开始预处理</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-variable">f</span>[<span class="cm-variable">x</span>][<span class="cm-variable">i</span>] <span class="cm-operator">=</span> <span class="cm-variable">f</span>[<span class="cm-variable">f</span>[<span class="cm-variable">x</span>][<span class="cm-variable">i</span> <span class="cm-operator">-</span> <span class="cm-number">1</span>]][<span class="cm-variable">i</span> <span class="cm-operator">-</span> <span class="cm-number">1</span>], <span class="cm-variable">g</span>[<span class="cm-variable">x</span>][<span class="cm-variable">i</span>] <span class="cm-operator">=</span> <span class="cm-variable">g</span>[<span class="cm-variable">x</span>][<span class="cm-variable">i</span> <span class="cm-operator">-</span> <span class="cm-number">1</span>] <span class="cm-operator">+</span> <span class="cm-variable">g</span>[<span class="cm-variable">f</span>[<span class="cm-variable">x</span>][<span class="cm-variable">i</span> <span class="cm-operator">-</span> <span class="cm-number">1</span>]][<span class="cm-variable">i</span> <span class="cm-operator">-</span> <span class="cm-number">1</span>];</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-keyword">for</span> (<span class="cm-variable-3">int</span> <span class="cm-variable">i</span> <span class="cm-operator">=</span> <span class="cm-variable">head</span>[<span class="cm-variable">x</span>]; <span class="cm-variable">i</span> <span class="cm-operator">!=</span> <span class="cm-operator">-</span><span class="cm-number">1</span>; <span class="cm-variable">i</span> <span class="cm-operator">=</span> <span class="cm-variable">ne</span>[<span class="cm-variable">i</span>])</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span>{</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-variable-3">int</span> <span class="cm-variable">v</span> <span class="cm-operator">=</span> <span class="cm-variable">edges</span>[<span class="cm-variable">i</span>];<span class="cm-comment">//在树上进行搜索</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-variable">dfs</span>(<span class="cm-variable">v</span>, <span class="cm-variable">x</span>);</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span>}</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;">}</span></pre>
+	</div>
+	</div>
+	</div>
+	</div>
+	</div>
+	<div style="position: absolute; height: 0px; width: 1px; border-bottom: 0px solid transparent; top: 381px;"></div>
+	<div class="CodeMirror-gutters" style="display: none; height: 381px;"></div>
+	</div>
+	</div>
+	</pre>
+	<p><span>求解lca：</span></p>
+	<pre class="md-fences md-end-block ty-contain-cm modeLoaded" spellcheck="false" lang="c++"
+		style="break-inside: unset;"><div class="CodeMirror cm-s-inner cm-s-null-scroll CodeMirror-wrap" lang="c++"><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 9.2px; left: 8px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; bottom: -1em; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 0px; margin-bottom: 0px; border-right-width: 0px; padding-right: 0px; padding-bottom: 0px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines" role="presentation"><div role="presentation" style="position: relative; outline: none;"><div class="CodeMirror-measure"><pre><span>xxxxxxxxxx</span></pre>
+	</div>
+	<div class="CodeMirror-measure"></div>
+	<div style="position: relative; z-index: 1;"></div>
+	<div class="CodeMirror-code" role="presentation" style="">
+		<div class="CodeMirror-activeline" style="position: relative;">
+			<div class="CodeMirror-activeline-background CodeMirror-linebackground"></div>
+			<div class="CodeMirror-gutter-background CodeMirror-activeline-gutter" style="left: 0px; width: 0px;"></div>
+			<pre class=" CodeMirror-line "
+				role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-variable-3">int</span> <span class="cm-def">lca</span>(<span class="cm-variable-3">int</span> <span class="cm-variable">x</span>, <span class="cm-variable-3">int</span> <span class="cm-variable">y</span>)</span></pre>
+		</div>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;">{</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-keyword">if</span> (<span class="cm-variable">dep</span>[<span class="cm-variable">x</span>] <span class="cm-operator">&lt;</span> <span class="cm-variable">dep</span>[<span class="cm-variable">y</span>]) <span class="cm-variable">swap</span>(<span class="cm-variable">x</span>, <span class="cm-variable">y</span>);<span class="cm-comment">//确保x是深度较大的结点</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-variable">repp</span>(<span class="cm-variable">i</span>, <span class="cm-number">19</span>, <span class="cm-number">0</span>)</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span>{</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-keyword">if</span> (<span class="cm-variable">dep</span>[<span class="cm-variable">fa</span>[<span class="cm-variable">x</span>][<span class="cm-variable">i</span>]] <span class="cm-operator">&gt;=</span> <span class="cm-variable">dep</span>[<span class="cm-variable">y</span>]) <span class="cm-variable">x</span> <span class="cm-operator">=</span> <span class="cm-variable">fa</span>[<span class="cm-variable">x</span>][<span class="cm-variable">i</span>];<span class="cm-comment">//二进制分解，从高位到低位逐位比较更新，如果更新到第2^i个父亲深度仍然太大则更新，否则就代表已经到达了终点</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span>}</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-keyword">if</span> (<span class="cm-variable">x</span> <span class="cm-operator">==</span> <span class="cm-variable">y</span>) <span class="cm-keyword">return</span> <span class="cm-variable">x</span>;</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-variable">repp</span>(<span class="cm-variable">i</span>, <span class="cm-number">19</span>, <span class="cm-number">0</span>)</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span>{</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-keyword">if</span> (<span class="cm-variable">fa</span>[<span class="cm-variable">x</span>][<span class="cm-variable">i</span>] <span class="cm-operator">!=</span> <span class="cm-variable">fa</span>[<span class="cm-variable">y</span>][<span class="cm-variable">i</span>]) <span class="cm-variable">x</span> <span class="cm-operator">=</span> <span class="cm-variable">fa</span>[<span class="cm-variable">x</span>][<span class="cm-variable">i</span>], <span class="cm-variable">y</span> <span class="cm-operator">=</span> <span class="cm-variable">fa</span>[<span class="cm-variable">y</span>][<span class="cm-variable">i</span>];<span class="cm-comment">//两个结点一起更新</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span>}</span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-keyword">return</span> <span class="cm-variable">fa</span>[<span class="cm-variable">x</span>][<span class="cm-number">0</span>];<span class="cm-comment">//得到的答案是x的直接父亲</span></span></pre>
+		<pre class=" CodeMirror-line "
+			role="presentation"><span role="presentation" style="padding-right: 0.1px;">}</span></pre>
+	</div>
+	</div>
+	</div>
+	</div>
+	</div>
+	<div style="position: absolute; height: 0px; width: 1px; border-bottom: 0px solid transparent; top: 403px;"></div>
+	<div class="CodeMirror-gutters" style="display: none; height: 403px;"></div>
+	</div>
+	</div>
+	</pre>
+	<p><span>于是我们得到了倍增的模板</span></p>
+	<p><span>（1）根据题目，暴力地求出每个点的直接跳转位置f[x] [0]，可以考虑用双指针优化</span></p>
+	<p><span>（2）用f[i] [j] = f[f[i] [j - 1]] [j - 1]预处理每个跳转的位置</span></p>
+	<p><span>（3）用二进制接近法，同时统计答案，公式为：</span></p>
 	<div contenteditable="false" spellcheck="false" class="mathjax-block md-end-block md-math-block md-rawblock"
 		id="mathjax-n58" cid="n58" mdtype="math_block" data-math-tag-before="0" data-math-tag-after="0"
 		data-math-labels="[]">
@@ -923,13 +1550,46 @@ void dfs(int x, int fa)
 							</g>
 						</g>
 					</g>
-				</svg></mjx-container>
+				</svg>
+				<mjx-assistive-mml unselectable="on" display="block"><math xmlns="http://www.w3.org/1998/Math/MathML"
+						display="block">
+						<mi>i</mi>
+						<mi>f</mi>
+						<mo stretchy="false">(</mo>
+						<mi>c</mi>
+						<mi>h</mi>
+						<mi>e</mi>
+						<mi>c</mi>
+						<mi>k</mi>
+						<mo stretchy="false">(</mo>
+						<mo stretchy="false">)</mo>
+						<mo>==</mo>
+						<mi>f</mi>
+						<mi>a</mi>
+						<mi>l</mi>
+						<mi>s</mi>
+						<mi>e</mi>
+						<mo stretchy="false">)</mo>
+						<mi>x</mi>
+						<mo>=</mo>
+						<mi>f</mi>
+						<mi>a</mi>
+						<mo stretchy="false">[</mo>
+						<mi>x</mi>
+						<mo stretchy="false">]</mo>
+						<mo stretchy="false">[</mo>
+						<mi>i</mi>
+						<mo stretchy="false">]</mo>
+					</math></mjx-assistive-mml>
+			</mjx-container>
 		</div>
 	</div>
-	<p>我们最终的目的是让check成立，所以当它不满足时代表还没有到达终点，需要继续用二进制的方法接近终点。check里需要比较的应当都是下一个状态的相对关系。例如如果想要快速得到第一个让fa[x]
-		[i]&gt;=a的i，就需要用到if(fa[x] [i]&lt;a) x=fa[x] [i]。</p>
-	<h2 id='小结'>小结</h2>
-	<p>这周的学习收获颇多，在前面学习的基础算法的基础上，学习了许多比较高难度的算法，但是还是有很多知识漏洞，要想办法克服一讲课就想睡觉的毛病啊（逃）。</p>
+	<p><span>我们最终的目的是让check成立，所以当它不满足时代表还没有到达终点，需要继续用二进制的方法接近终点。check里需要比较的应当都是下一个状态的相对关系。例如如果想要快速得到第一个让fa[x]
+			[i]&gt;=a的i，就需要用到if(fa[x] [i]&lt;a) x=fa[x] [i]。</span></p>
+	<h2 id='小结'><span>小结</span></h2>
+	<p><span>这周的学习收获颇多，在前面学习的基础算法的基础上，学习了许多比较高难度的算法，但是还是有很多知识漏洞，要想办法克服一讲课就想睡觉的毛病啊（逃）。</span></p>
+	</div>
+	</div>
 </body>
 
 </html>
