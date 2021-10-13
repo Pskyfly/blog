@@ -10,6 +10,9 @@ import (
 func IndexHandler(c *gin.Context) {
 	c.HTML(http.StatusOK, "index.html", nil)
 }
+func TalkHandler(c *gin.Context) {
+	c.HTML(http.StatusOK, "talk.html", nil)
+}
 func BlogHandler(c *gin.Context) {
 	c.HTML(http.StatusOK, "blog.html", nil)
 }
