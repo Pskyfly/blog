@@ -66,14 +66,14 @@
                 var e = this,
                     t = e.$createElement,
                     n = e._self._c || t;
-                return n("el-container", [n("el-header", [e._v("友善地鼓励一下吧")]), n("el-main", [n("el-row", { attrs: { type: "flex", justify: "center" } }, [n("el-col", { attrs: { xs: 20, span: 12 } }, [n("div", { staticClass: "grid-content" }, [n("el-divider", [n("h1", [e._v("评论区")])]), n("TodoList")], 1)])], 1)], 1), n("el-footer", [e._v("q1mi出品 Go学习交流QQ群：645090316")])], 1)
+                return n("el-container", [n("el-header", [e._v("鼓励一下吧")]), n("el-main", [n("el-row", { attrs: { type: "flex", justify: "center" } }, [n("el-col", { attrs: { xs: 20, span: 12 } }, [n("div", { staticClass: "grid-content" }, [n("el-divider", [n("h1", [e._v("评论区")])]), n("TodoList")], 1)])], 1)], 1), n("el-footer", [e._v("LTH")])], 1)
             },
             d = [],
             f = function() {
                 var e = this,
                     t = e.$createElement,
                     n = e._self._c || t;
-                return n("el-card", { staticClass: "box-card" }, [n("el-row", { attrs: { gutter: 20 } }, [n("el-col", { attrs: { span: 16, offset: 2 } }, [n("el-input", { attrs: { size: "", placeholder: "请输入待办事项..." }, model: { value: e.newTitle, callback: function(t) { e.newTitle = t }, expression: "newTitle" } })], 1), n("el-col", { attrs: { span: 6 } }, [n("el-button", { attrs: { type: "primary", icon: "el-icon-plus", circle: "" }, on: { click: e.handleAdd } })], 1)], 1), n("el-divider"), n("el-table", { staticStyle: { width: "100%" }, attrs: { data: e.tableData, "row-class-name": e.tableRowClassName } }, [n("el-table-column", { attrs: { type: "index", width: "50" } }), n("el-table-column", { attrs: { align: "center", label: "待办事项", prop: "title" } }), n("el-table-column", { attrs: { align: "right", label: "操作" }, scopedSlots: e._u([{ key: "default", fn: function(t) { return [n("el-button", { directives: [{ name: "show", rawName: "v-show", value: !t.row.status, expression: "!scope.row.status" }], attrs: { type: "success", icon: "el-icon-check", circle: "" }, on: { click: function(n) { return e.handleEdit(t.$index, t.row) } } }), n("el-button", { directives: [{ name: "show", rawName: "v-show", value: t.row.status, expression: "scope.row.status" }], attrs: { type: "warning", icon: "el-icon-refresh-left", circle: "" }, on: { click: function(n) { return e.handleEdit(t.$index, t.row) } } }), n("el-button", { attrs: { type: "danger", icon: "el-icon-close", circle: "" }, on: { click: function(n) { return e.handleDelete(t.$index, t.row.id) } } })] } }]) })], 1)], 1)
+                return n("el-card", { staticClass: "box-card" }, [n("el-row", { attrs: { gutter: 20 } }, [n("el-col", { attrs: { span: 16, offset: 2 } }, [n("el-input", { attrs: { size: "", placeholder: "请输入评论..." }, model: { value: e.newTitle, callback: function(t) { e.newTitle = t }, expression: "newTitle" } })], 1), n("el-col", { attrs: { span: 6 } }, [n("el-button", { attrs: { type: "primary", icon: "el-icon-plus", circle: "" }, on: { click: e.handleAdd } })], 1)], 1), n("el-divider"), n("el-table", { staticStyle: { width: "100%" }, attrs: { data: e.tableData, "row-class-name": e.tableRowClassName } }, [n("el-table-column", { attrs: { type: "index", width: "50" } }), n("el-table-column", { attrs: { align: "center", label: "评论", prop: "title" } }), n("el-table-column", { attrs: { align: "right", label: "操作" }, scopedSlots: e._u([{ key: "default", fn: function(t) { return [n("el-button", { directives: [{ name: "show", rawName: "v-show", value: !t.row.status, expression: "!scope.row.status" }], attrs: { type: "success", icon: "el-icon-check", circle: "" }, on: { click: function(n) { return e.handleEdit(t.$index, t.row) } } }), n("el-button", { directives: [{ name: "show", rawName: "v-show", value: t.row.status, expression: "scope.row.status" }], attrs: { type: "warning", icon: "el-icon-refresh-left", circle: "" }, on: { click: function(n) { return e.handleEdit(t.$index, t.row) } } }), n("el-button", { attrs: { type: "danger", icon: "el-icon-close", circle: "" }, on: { click: function(n) { return e.handleDelete(t.$index, t.row.id) } } })] } }]) })], 1)], 1)
             },
             p = [],
             h = (n("99af"), n("a434"), {
@@ -96,9 +96,9 @@
                     },
                     handleDelete: function(e, t) {
                         var n = this;
-                        this.axios.delete("/v1/todo/" + t).then((function() { n.tableData.splice(e, 1), n.$message({ showClose: !0, duration: 1500, message: "删除待办事项成功", type: "success" }) }))
+                        this.axios.delete("/v1/todo/" + t).then((function() { n.tableData.splice(e, 1), n.$message({ showClose: !0, duration: 1500, message: "删除评论成功", type: "success" }) }))
                     },
-                    handleAdd: function() { var e = this; "" != this.newTitle ? (this.axios.post("/v1/todo", { title: this.newTitle }).then((function() { e.getTodoList(), e.$message({ showClose: !0, duration: 1500, message: "添加待办事项成功", type: "success" }) })), this.newTitle = "") : this.$message({ showClose: !0, duration: 1500, message: "title不能为空哦", type: "warning" }) }
+                    handleAdd: function() { var e = this; "" != this.newTitle ? (this.axios.post("/v1/todo", { title: this.newTitle }).then((function() { e.getTodoList(), e.$message({ showClose: !0, duration: 1500, message: "添加评论成功", type: "success" }) })), this.newTitle = "") : this.$message({ showClose: !0, duration: 1500, message: "title不能为空哦", type: "warning" }) }
                 }
             }),
             v = h,
