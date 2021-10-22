@@ -1,36 +1,90 @@
 <!DOCTYPE html>
-<html>
+<html lang=en>
 
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>test</title>
-    <link rel="stylesheet" href="layui/css/layui.css">
-    <link rel="import" href="top.html" id="page1" />
-    <script src="layui/layui.js"></script>
+  <meta charset=utf-8>
+  <meta http-equiv=X-UA-Compatible content="IE=edge">
+  <meta name=viewport content="width=device-width,initial-scale=1">
+  <link rel=icon href=favicon.ico>
+  <title>评论区</title>
+  <link rel="stylesheet" href="layui/css/layui.css" id="layUI">
+  <link rel="stylesheet" href="css/typora.css" id="Typora">
+  <script src="layui/layui.js"></script>
 </head>
+<script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js">
+</script>
 
 <body>
-    <iframe SRC="blog.html" ></iframe> 
+  <!--导航条-->
+  <div class="margin-left:20px">
+    <ul class="layui-nav" lay-filter="">
+      <li class="layui-nav-item"><a style="font-size: large;font-style: italic;">Pskyfly's Blog<a></li>
+      <li class="layui-nav-item layui-col-md-offset7"><a href="homepage.html">首页</a></li>
+      <li class="layui-nav-item"><a href="problems.html">刷题记录</a></li>
+      <li class="layui-nav-item"><a href="talk.html">评论区</a></li>
+      <li class="layui-nav-item">
+        <a href="javascript:;">学习笔记</a>
+        <dl class="layui-nav-child">
+          <!-- 二级菜单 -->
+          <dd><a href="linux.html">Linux基础</a></dd>
+          <dd><a href="layui.html">LayUI框架</a></dd>
+          <dd><a href="acm.html">ACM-ICPC训练</a></dd>
+        </dl>
+      </li>
+    </ul>
+  </div>
+  <!--导航条-->
+  <form class="layui-form" action="" id="in">
+    <div class="layui-form-item layui-form-text">
+      <label class="layui-form-label" id = "content">文本域</label>
+      <div class="layui-input-block">
+        <textarea name="desc" placeholder="请输入内容" class="layui-textarea"></textarea>
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <div class="layui-input-block">
+        <button class="layui-btn" lay-submit lay-filter="formDemo">提交</button>
+      </div>
+    </div>
+  </form>
 
-    <!-- 引入 layui.js 的 <script> 标签最好放置在 html 末尾 -->
-    <script>
-        layui.use('element', function() {
-            var element = layui.element;
-            element.render('nav', 'test');
-            element.on('nav(filter)', function(elem) {
-                console.log(elem); //得到当前点击的DOM对象
-            });
-        });
-        layui.use('layer', function() {
-            var layer = layui.layer;
+  <script>
+    //Demo
+    layui.use('form', function () {
+      var form = layui.form;
 
-            //layer.msg("hi");
-        })
-        layui.use('code', function() { //加载code模块
-            layui.code(); //引用code方法
+      //监听提交
+      form.on('submit(formDemo)', function (data) {
+        // layer.msg(JSON.stringify(data.field));
+        // var dat = document.getElementById("in");
+         //var jsonstr=document.querySelector("#txtJsonStr");
+         //jsonstr.value="123";
+        // layer.msg(jsonstr);
+        // console.log(jsonstr);
+        var cont={
+            "content":"123456",
+        }
+        var xhr = new XMLHttpRequest();
+        xhr.open('get', '/test', true);
+        xhr.responseType = 'text';
+        xhr.onload = function () {
+          if (xhr.readyState === 4 && xhr.status === 200) {
+            //layer.msg(xhr.responseText);
+            layer.msg(cont["content"]);
+          }
+        };
+        xhr.send(cont);
+        return false;
+      });
+    });
+  </script>
+  <script>
+    $(document).ready(function(){
+        $("button").click(function(){
+          $(":button").hide();
         });
-    </script>
+      });
+  </script>
 </body>
 
 </html>

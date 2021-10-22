@@ -8,7 +8,6 @@ import (
 type Todo struct {
 	ID     int    `json:"id"`
 	Title  string `json:"title"`
-	Status bool   `json:"status"`
 }
 
 //Todo在数据库中的增删改查

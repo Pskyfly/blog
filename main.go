@@ -4,8 +4,6 @@ import (
 	"myblog/dao"
 	"myblog/models"
 	"myblog/routers"
-
-	"github.com/gin-gonic/gin"
 )
 
 func main() {

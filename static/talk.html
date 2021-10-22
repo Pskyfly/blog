@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang=en>
+
+<head>
+  <meta charset=utf-8>
+  <meta http-equiv=X-UA-Compatible content="IE=edge">
+  <meta name=viewport content="width=device-width,initial-scale=1">
+  <link rel=icon href=favicon.ico>
+  <title>评论区</title>
+  <link rel="stylesheet" href="layui/css/layui.css" id="layUI">
+  <link rel="stylesheet" href="css/typora.css" id="Typora">
+  <script src="layui/layui.js"></script>
+  <script src="js/jquery.js"></script>
+</head>
+
+<body>
+  <!--导航条-->
+  <div class="margin-left:20px">
+    <ul class="layui-nav" lay-filter="">
+      <li class="layui-nav-item"><a style="font-size: large;font-style: italic;">Pskyfly's Blog<a></li>
+      <li class="layui-nav-item layui-col-md-offset7"><a href="homepage.html">首页</a></li>
+      <li class="layui-nav-item"><a href="problems.html">刷题记录</a></li>
+      <li class="layui-nav-item"><a href="talk.html">评论区</a></li>
+      <li class="layui-nav-item">
+        <a href="javascript:;">学习笔记</a>
+        <dl class="layui-nav-child">
+          <!-- 二级菜单 -->
+          <dd><a href="linux.html">Linux基础</a></dd>
+          <dd><a href="layui.html">LayUI框架</a></dd>
+          <dd><a href="acm.html">ACM-ICPC训练</a></dd>
+        </dl>
+      </li>
+    </ul>
+  </div>
+  <!--导航条-->
+  <form class="layui-form" action="" id="in">
+    <div class="layui-form-item layui-form-text">
+      <label class="layui-form-label" id="content">文本域</label>
+      <div class="layui-input-block">
+        <textarea name="desc" id="context" placeholder="请输入内容" class="layui-textarea"></textarea>
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <div class="layui-input-block">
+        <button class="layui-btn" lay-submit lay-filter="formDemo">提交</button>
+      </div>
+    </div>
+  </form>
+
+  <table id="demo" lay-filter="test"></table>
+
+
+  <script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+  <script>
+    //Demo
+    //var alist
+    var table
+    layui.use('table', function () {
+      table = layui.table;
+      //第一个实例
+      table.render({
+        elem: '#demo'
+        , height: 500
+        ,page:true
+        , url: "/todo"
+        //, data: alist//JSON.stringify(alist)//[{"id":1,"title":"123"}]
+        , parseData: (res) => {
+          return {
+            "code": 0, //解析接口状态
+            "count":1000,
+            "data": res //解析数据列表
+          };
+        }
+        , page: true //开启分页
+        , cols: [[ //表头
+          //{ field: "id", title: '编号', width: 90, fixed: 'left' },
+          { field: "title", title: '评论', width: 1500, fixed: 'left' }
+        ]]
+      });
+    });
+    layui.use('form', function () {
+      var form = layui.form;
+
+      //监听提交
+      form.on('submit(formDemo)', function (data) {
+        var something = document.getElementById("in").context.value;
+
+        $.ajax({
+          url: "/todo",
+          type: "post",
+          contentType: 'application/json;charset=utf-8',//请求数据类型必须有
+          async: true,//异步
+          data: JSON.stringify({
+            "title": something,
+          }),
+          success: function (data) {
+            layer.msg("评论成功！")
+          }
+        });
+        //$.post("/todo", [{ "title": "lth" }]);
+        layui.use('table', function () {
+          table = layui.table;
+          //第一个实例
+          table.render({
+            elem: '#demo'
+            , height: 500
+            ,page:true
+            , url: "/todo"
+            //, data: alist//JSON.stringify(alist)//[{"id":1,"title":"123"}]
+            , parseData: (res) => {
+              return {
+                "code": 0, //解析接口状态
+                
+                "data": res //解析数据列表
+              };
+            }
+            , page: true //开启分页
+            , cols: [[ //表头
+              //{ field: "id", title: '编号', width: 90, fixed: 'left' },
+              { field: "title", title: '评论', width: 1500, fixed: 'left' }
+            ]]
+          });
+        });
+        return false;
+      });
+    });
+
+
+
+  </script>
+</body>
+
+</html>
