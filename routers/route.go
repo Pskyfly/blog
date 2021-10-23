@@ -26,6 +26,8 @@ func SetRouters() *gin.Engine {
 	r.POST("/todo", controller.CreateATodo)
 	r.GET("/todo", controller.ShowTodoList)
 	r.GET("/test", controller.TestAJAX)
+	r.PUT("todo/:id", controller.UpdateATodo)
+	r.DELETE("todo/:id", controller.DeleteATodo)
 	//r.POST("/talk",controller.CreateATodo)
 	//r.GET("/talk",controller.ShowTodoList)
 
